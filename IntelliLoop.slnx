@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="IntelliLoop.Core/IntelliLoop.Core.csproj" />
+  <Project Path="IntelliLoop.Tests/IntelliLoop.Tests.csproj" />
+  <Project Path="IntelliLoop.Web/IntelliLoop.Web.csproj" Id="fb4c5d85-d70f-44cc-8195-bb9f19c1b826" />
+</Solution>
