@@ -9,7 +9,7 @@ using Whisper.net.Ggml;
 
 namespace IntelliLoop.Web.Services
 {
-    public class TranscriptionService : IDisposable
+    public class TranscriptionService : ITranscriptionService, IDisposable
     {
 
         private readonly WhisperFactory _whisperFactory;
@@ -37,7 +37,7 @@ namespace IntelliLoop.Web.Services
             _processor?.Dispose();
         }
 
-        public async Task<string> TranscribeAudio(string audioFilePath)
+        public async Task<string> TranscribeAudioAsync(string audioFilePath)
         {
             if (!File.Exists(audioFilePath))
             {

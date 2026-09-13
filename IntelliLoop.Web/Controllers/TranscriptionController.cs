@@ -1,4 +1,5 @@
-﻿using IntelliLoop.Web.Services;
+﻿using IntelliLoop.Core.Interfaces;
+using IntelliLoop.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IntelliLoop.Web.Controllers
@@ -6,10 +7,13 @@ namespace IntelliLoop.Web.Controllers
 
     public class TranscriptionController : Controller
     {
-        private readonly TranscriptionService _transcriptionService;
-        public TranscriptionController(TranscriptionService transcriptionService)
+        private readonly ITranscriptionService _transcriptionService;
+        private readonly ILlmService _lectureService;
+
+        public TranscriptionController(ITranscriptionService transcriptionService, ILlmService lectureService)
         {
             _transcriptionService = transcriptionService;
+            _lectureService = lectureService;
         }
         public IActionResult Index()
         {
@@ -36,13 +40,14 @@ namespace IntelliLoop.Web.Controllers
                 }
 
                 // Call the transcription service
-                var transcript = await _transcriptionService.TranscribeAudio(filePath);
+                var transcript = await _transcriptionService.TranscribeAudioAsync(filePath);
 
                 ViewBag.Transcript = transcript;
 
                 return View(nameof(Index));
 
             }
+
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, $"An error occurred while processing the file: {ex.Message}");
@@ -56,6 +61,16 @@ namespace IntelliLoop.Web.Controllers
                     System.IO.File.Delete(filePath);
                 }
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Summarize(string transcript)
+        {
+            var lecture = await _lectureService.AnalyzeLectureAsync(transcript);
+
+            ViewBag.Lecture = lecture.Transcript;
+
+            return View(nameof(Index));
         }
     }
 }

@@ -1,8 +1,10 @@
 using FFMpegCore;
+using IntelliLoop.Core.Interfaces;
 using IntelliLoop.Web.Data;
 using IntelliLoop.Web.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using OllamaSharp;
 using System.Text;
 using Whisper.net;
 using Whisper.net.Ggml;
@@ -20,6 +22,9 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+
+// Create Whisper model
+
 if (!File.Exists(builder.Configuration["Whisper:ModelPath"]))
 {
     using var modelStream = await WhisperGgmlDownloader.Default.GetGgmlModelAsync(GgmlType.Small); //downloads the small model of whisper
@@ -27,9 +32,15 @@ if (!File.Exists(builder.Configuration["Whisper:ModelPath"]))
     await modelStream.CopyToAsync(fileWriter);
 }
 
-builder.Services.AddSingleton<TranscriptionService>();
+builder.Services.AddSingleton<ITranscriptionService, TranscriptionService>();
+
+
+builder.Services.AddChatClient(new OllamaApiClient(new Uri("http://localhost:11434"), "qwen3:8b")); // TODO: Move this to a configuration file or environment variable later
+builder.Services.AddSingleton<ILlmService, LocalLlmService>();
 
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
