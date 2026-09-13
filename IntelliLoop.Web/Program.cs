@@ -2,6 +2,7 @@ using FFMpegCore;
 using IntelliLoop.Core.Interfaces;
 using IntelliLoop.Web.Data;
 using IntelliLoop.Web.Services;
+using IntelliLoop.Web.Services.Background;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OllamaSharp;
@@ -22,6 +23,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddSingleton<BackgroundTaskQueue>();
+builder.Services.AddHostedService<BackgroundTaskWorker>();
 
 // Create Whisper model
 
@@ -34,8 +37,20 @@ if (!File.Exists(builder.Configuration["Whisper:ModelPath"]))
 
 builder.Services.AddSingleton<ITranscriptionService, TranscriptionService>();
 
+var httpClient = new HttpClient
+{
+    BaseAddress = new Uri("http://localhost:11434"),
+    Timeout = TimeSpan.FromMinutes(10)
+};
 
-builder.Services.AddChatClient(new OllamaApiClient(new Uri("http://localhost:11434"), "qwen3:8b")); // TODO: Move this to a configuration file or environment variable later
+var ollamaClient = new OllamaApiClient(httpClient)
+{
+    SelectedModel = "qwen3:8b"
+};
+
+// TODO: Move this to a configuration file or environment variable later
+
+builder.Services.AddChatClient(ollamaClient);
 builder.Services.AddSingleton<ILlmService, LocalLlmService>();
 
 var app = builder.Build();

@@ -1,4 +1,5 @@
-﻿using IntelliLoop.Core.Interfaces;
+﻿using IntelliLoop.Core.Entities;
+using IntelliLoop.Core.Interfaces;
 using IntelliLoop.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,11 +10,12 @@ namespace IntelliLoop.Web.Controllers
     {
         private readonly ITranscriptionService _transcriptionService;
         private readonly ILlmService _lectureService;
-
-        public TranscriptionController(ITranscriptionService transcriptionService, ILlmService lectureService)
+        private readonly BackgroundTaskQueue _queue;
+        public TranscriptionController(ITranscriptionService transcriptionService, ILlmService lectureService, BackgroundTaskQueue queue)
         {
             _transcriptionService = transcriptionService;
             _lectureService = lectureService;
+            _queue = queue;
         }
         public IActionResult Index()
         {
@@ -42,8 +44,6 @@ namespace IntelliLoop.Web.Controllers
                 // Call the transcription service
                 var transcript = await _transcriptionService.TranscribeAudioAsync(filePath);
 
-                ViewBag.Transcript = transcript;
-
                 return View(nameof(Index));
 
             }
@@ -66,9 +66,14 @@ namespace IntelliLoop.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Summarize(string transcript)
         {
-            var lecture = await _lectureService.AnalyzeLectureAsync(transcript);
 
-            ViewBag.Lecture = lecture.Transcript;
+            await _queue.QueueAsync(async () => 
+            {
+                var lecture = await _lectureService.AnalyzeLectureAsync(transcript);
+                Console.WriteLine("AI RESULT:");
+                Console.WriteLine(lecture.Transcript);
+                ViewBag.Lecture = lecture.Transcript;
+            });
 
             return View(nameof(Index));
         }
