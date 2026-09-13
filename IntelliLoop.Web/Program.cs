@@ -36,6 +36,7 @@ if (!File.Exists(builder.Configuration["Whisper:ModelPath"]))
 }
 
 builder.Services.AddSingleton<ITranscriptionService, TranscriptionService>();
+builder.Services.AddSingleton<DocumentLayoutService>();
 
 var httpClient = new HttpClient
 {

@@ -7,6 +7,6 @@ namespace IntelliLoop.Core.Interfaces
 {
     public interface ILlmService
     {
-        Task<Lecture> AnalyzeLectureAsync(string transcript);
+        Task<LectureAnalysis> AnalyzeLectureAsync(string transcript);
     }
 }

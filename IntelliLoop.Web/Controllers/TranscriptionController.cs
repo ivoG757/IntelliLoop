@@ -10,12 +10,14 @@ namespace IntelliLoop.Web.Controllers
     {
         private readonly ITranscriptionService _transcriptionService;
         private readonly ILlmService _lectureService;
+        private readonly DocumentLayoutService _documentLayoutService;
         private readonly BackgroundTaskQueue _queue;
-        public TranscriptionController(ITranscriptionService transcriptionService, ILlmService lectureService, BackgroundTaskQueue queue)
+        public TranscriptionController(ITranscriptionService transcriptionService, ILlmService lectureService, BackgroundTaskQueue queue, DocumentLayoutService documentLayoutService)
         {
             _transcriptionService = transcriptionService;
             _lectureService = lectureService;
             _queue = queue;
+            _documentLayoutService = documentLayoutService;
         }
         public IActionResult Index()
         {
@@ -70,9 +72,10 @@ namespace IntelliLoop.Web.Controllers
             await _queue.QueueAsync(async () => 
             {
                 var lecture = await _lectureService.AnalyzeLectureAsync(transcript);
+                var markdown = _documentLayoutService.ToMarkdown(lecture);
                 Console.WriteLine("AI RESULT:");
-                Console.WriteLine(lecture.Transcript);
-                ViewBag.Lecture = lecture.Transcript;
+                Console.WriteLine(markdown);
+                ViewBag.Lecture = markdown;
             });
 
             return View(nameof(Index));
