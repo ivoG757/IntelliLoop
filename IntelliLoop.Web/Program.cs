@@ -22,7 +22,7 @@ builder.Services.AddControllersWithViews();
 
 if (!File.Exists(builder.Configuration["Whisper:ModelPath"]))
 {
-    using var modelStream = await WhisperGgmlDownloader.Default.GetGgmlModelAsync(GgmlType.Base); //downloads the base model of whisper
+    using var modelStream = await WhisperGgmlDownloader.Default.GetGgmlModelAsync(GgmlType.Small); //downloads the small model of whisper
     using var fileWriter = File.Create(builder.Configuration["Whisper:ModelPath"]!);
     await modelStream.CopyToAsync(fileWriter);
 }
@@ -30,22 +30,6 @@ if (!File.Exists(builder.Configuration["Whisper:ModelPath"]))
 builder.Services.AddSingleton<TranscriptionService>();
 
 var app = builder.Build();
-
-// TESTING: Transcribe an audio file and print the transcript to the console
-
-var mediaInfo = await FFProbe.AnalyseAsync(@"D:\projects\IntelliLoop\IntelliLoop.Web\test.wav");
-
-Console.WriteLine($"Format: {mediaInfo.Format.FormatName}");
-Console.WriteLine($"Duration: {mediaInfo.Duration}");
-
-
-var transcriptionService = app.Services.GetRequiredService<TranscriptionService>();
-
-var transcript = await transcriptionService.TranscribeAudio(@"D:\projects\IntelliLoop\IntelliLoop.Web\test.wav");
-
-Console.WriteLine(transcript);
-
-// END OF TESTING
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

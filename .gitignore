@@ -16,6 +16,9 @@
 # whispers files
 ggml-*.bin
 
+# test audio files
+test*
+
 # Mono auto generated files
 mono_crash.*
 

@@ -26,7 +26,7 @@ namespace IntelliLoop.Web.Services
 
             _whisperFactory = WhisperFactory.FromPath(_modelPath);
 
-            _processor = _whisperFactory.CreateBuilder().WithLanguage("auto").Build(); // TODO: make the language configurable
+            _processor = _whisperFactory.CreateBuilder().WithLanguage(configuration["Whisper:Language"] ?? "auto").Build(); 
         }
 
 
