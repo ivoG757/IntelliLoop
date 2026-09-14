@@ -25,6 +25,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddSingleton<BackgroundTaskQueue>();
 builder.Services.AddHostedService<BackgroundTaskWorker>();
+builder.Services.AddScoped<IPromptService, PromptService>();
 
 // Create Whisper model
 
@@ -36,7 +37,6 @@ if (!File.Exists(builder.Configuration["Whisper:ModelPath"]))
 }
 
 builder.Services.AddSingleton<ITranscriptionService, TranscriptionService>();
-builder.Services.AddSingleton<DocumentLayoutService>();
 
 var httpClient = new HttpClient
 {
@@ -47,12 +47,11 @@ var httpClient = new HttpClient
 var ollamaClient = new OllamaApiClient(httpClient)
 {
     SelectedModel = "qwen3:8b"
-};
-
+}; 
 // TODO: Move this to a configuration file or environment variable later
 
 builder.Services.AddChatClient(ollamaClient);
-builder.Services.AddSingleton<ILlmService, LocalLlmService>();
+builder.Services.AddScoped<ILlmService, LocalLlmService>();
 
 var app = builder.Build();
 

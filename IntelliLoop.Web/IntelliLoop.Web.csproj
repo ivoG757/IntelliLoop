@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <Folder Include="Extensions\" />
+    <Folder Include="Prompts\" />
   </ItemGroup>
 
 </Project>
