@@ -1,6 +1,6 @@
 ﻿using IntelliLoop.Core.Entities;
 using IntelliLoop.Core.Interfaces;
-using IntelliLoop.Web.Services;
+using IntelliLoop.Web.Services.Background;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IntelliLoop.Web.Controllers

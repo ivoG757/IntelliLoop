@@ -1,7 +1,7 @@
 ﻿using IntelliLoop.Core.Interfaces;
 using System.Threading.Channels;
 
-namespace IntelliLoop.Web.Services
+namespace IntelliLoop.Web.Services.Background
 {
     public class BackgroundTaskQueue : IBackgroundTaskQueue
     {

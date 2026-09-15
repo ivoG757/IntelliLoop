@@ -1,8 +1,9 @@
 using FFMpegCore;
 using IntelliLoop.Core.Interfaces;
 using IntelliLoop.Web.Data;
-using IntelliLoop.Web.Services;
+using IntelliLoop.Web.Services.AI;
 using IntelliLoop.Web.Services.Background;
+using IntelliLoop.Web.Services.Transcription;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OllamaSharp;

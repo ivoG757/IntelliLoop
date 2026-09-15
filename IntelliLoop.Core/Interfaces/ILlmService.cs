@@ -1,4 +1,4 @@
-﻿using IntelliLoop.Core.Entities;
+﻿using IntelliLoop.Core.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Text;

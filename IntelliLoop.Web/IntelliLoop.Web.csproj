@@ -26,7 +26,6 @@
 
   <ItemGroup>
     <Folder Include="Extensions\" />
-    <Folder Include="Prompts\Formatting\" />
     <Folder Include="Prompts\Quiz\" />
   </ItemGroup>
 

@@ -1,9 +1,9 @@
-﻿using IntelliLoop.Core.Entities;
+﻿using IntelliLoop.Core.DTOs;
 using IntelliLoop.Core.Interfaces;
 using Microsoft.Extensions.AI;
 using System.Text;
 
-namespace IntelliLoop.Web.Services
+namespace IntelliLoop.Web.Services.AI
 {
     public class LocalLlmService : ILlmService
     {

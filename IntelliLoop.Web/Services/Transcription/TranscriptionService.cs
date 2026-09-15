@@ -7,7 +7,7 @@ using System.Text;
 using Whisper.net;
 using Whisper.net.Ggml;
 
-namespace IntelliLoop.Web.Services
+namespace IntelliLoop.Web.Services.Transcription
 {
     public class TranscriptionService : ITranscriptionService, IDisposable
     {
