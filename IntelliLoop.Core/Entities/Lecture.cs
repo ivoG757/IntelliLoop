@@ -1,15 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace IntelliLoop.Core.Entities
 {
     public class Lecture
     {
+        [Key]
         public int Id { get; set; }
-        public string Title { get; set; } = string.Empty;
-        public string Summary { get; set; } = string.Empty;
-        public List<string> KeyConcepts { get; set; } = new();
-        public List<NoteSection> Notes { get; set; } = new();
+
+        [Required]
+        public string Title { get; set; } = null!;
+
+        [Required]
+        public string Summary { get; set; } = null!;
+        public ICollection<string> KeyConcepts { get; set; } = new List<string>();
+        public ICollection<NoteSection> Notes { get; set; } = new List<NoteSection>();
     }
 }

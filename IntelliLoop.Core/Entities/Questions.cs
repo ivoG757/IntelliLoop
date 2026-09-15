@@ -3,19 +3,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IntelliLoop.Core.Entities
 {
-    public class NoteSection
+    public class Questions
     {
         [Key]
-        public int Id { get; set; }
-
-        [Required]
-        public string Title { get; set; } = null!;
-
-        [Required]
-        public string Content { get; set; } = null!;
+        public int id { get; set; }
 
         [ForeignKey(nameof(Lecture))]
         public int LectureId { get; set; }
         public Lecture lecture { get; set; } = null!;
+
+        [Required]
+        public List<string> QuestionsList { get; set; } = null!;
     }
 }

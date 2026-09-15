@@ -1,6 +1,6 @@
 ﻿namespace IntelliLoop.Web.Services.Background
 {
-    public class BackgroundTaskWorker : BackgroundService
+    public class BackgroundTaskWorker : BackgroundService 
     {
         private readonly BackgroundTaskQueue _queue;
 
@@ -21,6 +21,7 @@
                 }
                 catch (Exception ex)
                 {
+                    //TODO: add logging here
                     Console.WriteLine($"Background job failed: {ex}");
                 }
             }
