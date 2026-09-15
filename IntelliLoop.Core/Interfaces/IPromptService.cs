@@ -6,6 +6,7 @@ namespace IntelliLoop.Core.Interfaces
 {
     public interface IPromptService
     {
-        public string GetPrompts();
+        public Dictionary<string, List<string>> GetExtractionPrompts();
+        public Dictionary<string, List<string>> GetFormattingPrompts();
     }
 }

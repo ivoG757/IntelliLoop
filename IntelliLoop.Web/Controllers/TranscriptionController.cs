@@ -73,6 +73,7 @@ namespace IntelliLoop.Web.Controllers
             {
                 var lecture = await _lectureService.AnalyzeLectureAsync(transcript);
                 Console.WriteLine("AI RESULT:");
+
                 var output = System.Text.Json.JsonSerializer.Serialize(lecture, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
 
                 Console.WriteLine(output);

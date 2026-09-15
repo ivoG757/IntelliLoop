@@ -1,48 +1,92 @@
 ﻿using IntelliLoop.Core.Interfaces;
-using System.Text;
 
 namespace IntelliLoop.Web.Services
 {
     public class PromptService : IPromptService
     {
         private readonly ILogger<PromptService> _logger;
-        private readonly string _promptPath;
+        private readonly string _promptsPath;
 
         public PromptService(IConfiguration configuration, ILogger<PromptService> logger, IHostEnvironment environment)
         {
             _logger = logger;
 
-            var promptPath = configuration["Prompts:Path"] ?? throw new ArgumentNullException("Prompts:Path configuration is missing.");
+            var promptPath = configuration["Prompts:Path"] ?? throw new InvalidOperationException("Prompts:Path configuration is missing.");
 
-            _promptPath = Path.Combine(environment.ContentRootPath, promptPath);
+            _promptsPath = Path.Combine(environment.ContentRootPath, promptPath);
         }
 
-        public string GetPrompts()
+        public Dictionary<string, List<string>> GetExtractionPrompts()
         {
+            var folderName = "Extraction";
 
-            if (!Directory.Exists(_promptPath))
-            {
-                _logger.LogError("Prompt folder not found: {PromptPath}", _promptPath);
+            ValidatePromptFolder(folderName);
 
-                throw new DirectoryNotFoundException($"Prompt folder not found: {_promptPath}");
-            }
-            var prompts = Directory.GetFiles(_promptPath, "*.txt");
+            return GetPromptsFromFolder(folderName);
+        }
 
-            if (prompts.Length == 0) 
-            {
-                _logger.LogError("Prompt folder does not contain any text files: {PromptPath}", _promptPath);
-                throw new DirectoryNotFoundException($"Prompt folder does not contain any text files: {_promptPath}");
-            }
+        public Dictionary<string, List<string>> GetFormattingPrompts()
+        {
+            var folderName = "Formatting";
 
-            var stringBuilder = new StringBuilder();
+            ValidatePromptFolder(folderName);
+
+            return GetPromptsFromFolder(folderName);
+        }
+
+        private Dictionary<string, List<string>> GetPromptsFromFolder(string folderName)
+        {
+            var prompts = Directory.GetFiles(Path.Combine(_promptsPath, folderName), "*.txt");
+            Dictionary<string, List<string>> promptContents = new Dictionary<string, List<string>>();
 
             foreach (var promptFile in prompts)
             {
-                stringBuilder.AppendLine(File.ReadAllText(promptFile));
-                stringBuilder.AppendLine();
+                var role = string.Empty;
+                if (Path.GetFileName(promptFile).StartsWith("system_"))
+                {
+                    role = "system";
+                }
+                else if (Path.GetFileName(promptFile).StartsWith("user_"))
+                {
+                    role = "user";
+                }
+                else
+                {
+                    _logger.LogWarning("Prompt file {PromptFile} does not have a recognized role prefix. Defaulting to 'user'.", promptFile);
+                    role = "user";
+                }
+
+                if (!promptContents.ContainsKey(role))
+                {
+                    promptContents[role] = new List<string>();
+                }
+
+                promptContents[role].Add(File.ReadAllText(promptFile));
+            }
+            return promptContents;
+        }
+
+        /// <summary>
+        /// Validates that the specified prompt folder exists and contains at least one text file.
+        /// </summary>
+        /// <param name="folderName"></param>
+        /// <exception cref="DirectoryNotFoundException"></exception>
+        private void ValidatePromptFolder(string folderName)
+        {
+            var path = Path.Combine(_promptsPath, folderName);
+
+            if (!Directory.Exists(path))
+            {
+                _logger.LogError("Prompt folder not found: {PromptPath}", path);
+
+                throw new DirectoryNotFoundException($"Prompt folder not found: {path}");
             }
 
-            return stringBuilder.ToString();
+            if (Directory.GetFiles(path, "*.txt").Length == 0)
+            {
+                _logger.LogError("Prompt folder does not contain any text files: {PromptPath}", path);
+                throw new InvalidOperationException($"Prompt folder does not contain any text files: {path}");
+            }
         }
     }
 }
