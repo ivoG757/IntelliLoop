@@ -9,5 +9,6 @@ namespace IntelliLoop.Web.Data
         public DbSet<Lecture> Lectures { get; set; }
         public DbSet<Questions> Questions { get; set; }
         public DbSet<NoteSection> Notes { get; set; }
+        public DbSet<ProcessingJob> ProcessingJobs { get; set; }
     }
 }

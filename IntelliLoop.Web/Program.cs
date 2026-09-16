@@ -1,4 +1,5 @@
 using FFMpegCore;
+using IntelliLoop.Core.Entities;
 using IntelliLoop.Core.Interfaces;
 using IntelliLoop.Web.Data;
 using IntelliLoop.Web.Services.AI;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OllamaSharp;
 using System.Text;
+using System.Threading.Channels;
 using Whisper.net;
 using Whisper.net.Ggml;
 
@@ -28,6 +30,7 @@ builder.Services.AddSingleton<BackgroundTaskQueue>();
 builder.Services.AddHostedService<BackgroundTaskWorker>();
 builder.Services.AddScoped<IPromptService, PromptService>();
 
+
 // Create Whisper model
 
 if (!File.Exists(builder.Configuration["Whisper:ModelPath"]))
@@ -38,6 +41,16 @@ if (!File.Exists(builder.Configuration["Whisper:ModelPath"]))
 }
 
 builder.Services.AddSingleton<ITranscriptionService, TranscriptionService>();
+
+builder.Services.AddSingleton(_ =>
+{
+    var channel = Channel.CreateBounded<LectureGenerationJob>(new BoundedChannelOptions(100) 
+    {
+        FullMode = BoundedChannelFullMode.Wait
+    });
+
+    return channel;
+}); // 
 
 var httpClient = new HttpClient
 {
