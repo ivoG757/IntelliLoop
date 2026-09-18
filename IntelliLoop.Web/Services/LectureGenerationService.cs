@@ -10,12 +10,12 @@ namespace IntelliLoop.Web.Services
     public class LectureGenerationService : ILectureGenerationService
     {
         private readonly Channel<LectureGenerationJob> _jobChannel;
-        private readonly ILectureGenerationRepository _lectureGenerationRepository;
+        private readonly ILectureProcessingRepository _lectureGenerationRepository;
         private readonly ILogger<LectureGenerationService> _logger;
         private readonly IFileStorage _fileStorage;
         private readonly IUnitOfWork _uof;
         public LectureGenerationService(Channel<LectureGenerationJob> jobChannel,
-            ILectureGenerationRepository lectureGenerationRepository,
+            ILectureProcessingRepository lectureGenerationRepository,
             ILogger<LectureGenerationService> logger,
             IFileStorage fileStorage,
             IUnitOfWork uof)
@@ -59,7 +59,7 @@ namespace IntelliLoop.Web.Services
         public async Task GetLectureByIdAsync(string jobId)
         {
             var job = await _lectureGenerationRepository.GetJobByIdAsync(jobId);
-            // Process the job...
+            
         }
     }
 }

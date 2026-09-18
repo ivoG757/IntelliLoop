@@ -21,7 +21,6 @@ namespace IntelliLoop.Web.Services.AI
 
         public async Task<LectureAnalysis> AnalyzeLectureAsync(string transcript)
         {
-            //Extract info
             var extractionPrompts = _promptService.GetExtractionPrompts();
 
             var extractionMessages = new List<ChatMessage>
@@ -33,7 +32,6 @@ namespace IntelliLoop.Web.Services.AI
             var analyzedInfo = await _client.GetResponseAsync(extractionMessages);
 
 
-            //Format info
             var formattingPrompts = _promptService.GetFormattingPrompts();
 
             var formattingMessages = new List<ChatMessage>
