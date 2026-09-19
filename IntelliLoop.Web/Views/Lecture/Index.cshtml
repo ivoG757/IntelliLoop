@@ -2,7 +2,20 @@
     ViewData["Title"] = "Lecture generation";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Generate lecture: </h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5">
+    <h1 class="display-4">Upload lecture: </h1>
+    <p class="text-muted">
+        Upload an audio recording and IntelliLoop will process it.
+    </p>
+
+    <form asp-controller="Lecture" asp-action="Upload" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="file" class="form-label">Lecture audio</label>
+            <input type="file" class="form-control" id="file" name="file" accept="audio/*" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Process Lecture
+        </button>
+    </form>
 </div>

@@ -15,6 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 Console.OutputEncoding = Encoding.UTF8;
 
+builder.Logging.AddConsole();
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
@@ -39,6 +41,8 @@ builder.Services.AddScoped<ILectureRepository, LectureRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IFileStorage, FileStorage>();
+
+builder.Services.AddHostedService<LectureWorker>();
 
 
 if (!File.Exists(builder.Configuration["Whisper:ModelPath"]))
