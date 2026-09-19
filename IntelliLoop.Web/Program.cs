@@ -1,6 +1,7 @@
 using IntelliLoop.Core.Interfaces;
 using IntelliLoop.Core.Repository;
 using IntelliLoop.Web.Data;
+using IntelliLoop.Web.Identity;
 using IntelliLoop.Web.Repositories;
 using IntelliLoop.Web.Services;
 using Microsoft.AspNetCore.Identity;
@@ -8,8 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using OllamaSharp;
 using System.Text;
 using System.Threading.Channels;
-using Whisper.net;
 using Whisper.net.Ggml;
+using IntelliLoop.Web.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,26 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<IntelliLoopDbContext>();
+
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+{
+    options.User.RequireUniqueEmail = true;
+    options.Password.RequiredLength = Constants.Account.MinimumPasswordLength;
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredUniqueChars = 1;
+    options.Lockout.AllowedForNewUsers = true;
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
+    options.SignIn.RequireConfirmedAccount = false;
+    options.SignIn.RequireConfirmedEmail = false;
+    options.SignIn.RequireConfirmedPhoneNumber = false;
+})
+.AddEntityFrameworkStores<IntelliLoopDbContext>()
+.AddDefaultTokenProviders();
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IPromptService, PromptService>();
@@ -98,6 +119,7 @@ else
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
