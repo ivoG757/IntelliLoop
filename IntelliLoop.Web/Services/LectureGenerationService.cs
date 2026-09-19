@@ -9,12 +9,12 @@ namespace IntelliLoop.Web.Services
 {
     public class LectureGenerationService : ILectureGenerationService
     {
-        private readonly Channel<LectureGenerationJob> _jobChannel;
+        private readonly Channel<Guid> _jobChannel;
         private readonly ILectureProcessingRepository _lectureGenerationRepository;
         private readonly ILogger<LectureGenerationService> _logger;
         private readonly IFileStorage _fileStorage;
         private readonly IUnitOfWork _uof;
-        public LectureGenerationService(Channel<LectureGenerationJob> jobChannel,
+        public LectureGenerationService(Channel<Guid> jobChannel,
             ILectureProcessingRepository lectureGenerationRepository,
             ILogger<LectureGenerationService> logger,
             IFileStorage fileStorage,
@@ -28,12 +28,12 @@ namespace IntelliLoop.Web.Services
 
         }
 
-        public async Task<string> QueueLectureGenerationAsync(IFormFile file, string userId)
+        public async Task<Guid> QueueLectureGenerationAsync(IFormFile file, string userId)
         {
 
             var filePath = await _fileStorage.SaveAsync(file, userId);
 
-            var job = new ProcessingJob
+            ProcessingJob job = new ProcessingJob
             {
                 FilePath = filePath,
                 Status = LectureGenerationStatus.Queued,
@@ -44,22 +44,14 @@ namespace IntelliLoop.Web.Services
 
             await _uof.SaveChangesAsync();
 
-            var generationJob = new LectureGenerationJob
-            {
-                Id = job.Id.ToString(),
-                FilePath = job.FilePath,
-                Status = job.Status
-            };
+            await _jobChannel.Writer.WriteAsync(job.Id);
 
-            await _jobChannel.Writer.WriteAsync(generationJob);
-
-            return generationJob.Id;
+            return job.Id;
         }
 
-        public async Task GetLectureByIdAsync(string jobId)
+        public async Task<Lecture> GetLectureByIdAsync(Guid jobId)
         {
-            var job = await _lectureGenerationRepository.GetJobByIdAsync(jobId);
-            
+            return new Lecture();
         }
     }
 }

@@ -5,12 +5,12 @@ namespace IntelliLoop.Web.Services.Background
 {
     public class LectureWorker : BackgroundService
     {
-        private readonly Channel<LectureGenerationJob> _channel;
+        private readonly Channel<Guid> _channel;
         private readonly ILogger<LectureWorker> _logger;
         private readonly IServiceScopeFactory _scopeFactory;
 
 
-        public LectureWorker(Channel<LectureGenerationJob> channel,
+        public LectureWorker(Channel<Guid> channel,
             ILogger<LectureWorker> logger, IServiceScopeFactory serviceScopeFactory)
         {
             _channel = channel;
@@ -25,13 +25,13 @@ namespace IntelliLoop.Web.Services.Background
 
             while (await _channel.Reader.WaitToReadAsync(stoppingToken))
             {
-                while (_channel.Reader.TryRead(out var job))
+                while (_channel.Reader.TryRead(out var jobId))
                 {
                     try
                     {
-                        var scope = _scopeFactory.CreateScope();
+                        using var scope = _scopeFactory.CreateScope();
                         var lectureProcessingService = scope.ServiceProvider.GetRequiredService<LectureProcessingService>();
-                        await lectureProcessingService.ProcessLectureAsync(job.Id);
+                        await lectureProcessingService.ProcessLectureAsync(jobId);
                     }
                     catch (OperationCanceledException)
                     {

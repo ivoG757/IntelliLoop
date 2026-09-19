@@ -26,8 +26,6 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddSingleton<BackgroundTaskQueue>();
-builder.Services.AddHostedService<BackgroundTaskWorker>();
 builder.Services.AddScoped<IPromptService, PromptService>();
 
 
@@ -44,7 +42,7 @@ builder.Services.AddSingleton<ITranscriptionService, TranscriptionService>();
 
 builder.Services.AddSingleton(_ =>
 {
-    var channel = Channel.CreateBounded<LectureGenerationJob>(new BoundedChannelOptions(100) 
+    var channel = Channel.CreateBounded<Guid>(new BoundedChannelOptions(100) 
     {
         FullMode = BoundedChannelFullMode.Wait
     });

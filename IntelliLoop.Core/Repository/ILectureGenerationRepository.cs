@@ -4,9 +4,9 @@ namespace IntelliLoop.Core.Repository
 {
     public interface ILectureProcessingRepository
     {
-        public Task<LectureGenerationJob> GetJobByIdAsync(string jobId);
+        public Task<ProcessingJob> GetJobByIdAsync(Guid jobId);
         public Task AddJobAsync(ProcessingJob job);
         public Task UpdateJobAsync(ProcessingJob job);
-        public Task<LectureGenerationJob> CreateJobAsync(string filePath);
+        public Task<ProcessingJob> CreateJobAsync(string filePath);
     }
 }

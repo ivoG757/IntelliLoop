@@ -1,5 +1,5 @@
 ﻿using IntelliLoop.Core.Interfaces;
-using IntelliLoop.Web.Services.Background;
+using IntelliLoop.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IntelliLoop.Web.Controllers
@@ -23,7 +23,7 @@ namespace IntelliLoop.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Upload(IFormFile file)
         {
-            var userId = User.Identity!.Name!;
+            string userId = User.Identity!.Name!;
 
             if (file == null || file.Length == 0)
             {
@@ -32,7 +32,7 @@ namespace IntelliLoop.Web.Controllers
             }
 
 
-            var jobId = await _lectureGenerationService.QueueLectureGenerationAsync(file, userId);
+            Guid jobId = await _lectureGenerationService.QueueLectureGenerationAsync(file, userId);
 
             return RedirectToAction(nameof(Lecture),
                 new
@@ -44,9 +44,21 @@ namespace IntelliLoop.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Lecture(string id)
         {
-            await _lectureGenerationService.GetLectureByIdAsync(id);
+            var IdIsGuid = Guid.TryParse(id, out var lectureId);
 
-            return View(nameof(Index));
+            if(!IdIsGuid)
+            {
+                ModelState.AddModelError("Id", "Please provide lecture id");
+            }
+
+            Lecture job = await _lectureGenerationService.GetLectureByIdAsync(lectureId);
+
+            if (job == null)
+            {
+                return NotFound();
+            }
+
+            return View(job);
         }
     }
 }

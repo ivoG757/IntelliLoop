@@ -1,4 +1,5 @@
-﻿using IntelliLoop.Core.Entities;
+﻿using IntelliLoop.Core.DTOs;
+using IntelliLoop.Core.Entities;
 using IntelliLoop.Core.Entities.Enums;
 using IntelliLoop.Core.Interfaces;
 using IntelliLoop.Core.Repository;
@@ -29,21 +30,23 @@ namespace IntelliLoop.Web.Services
             _lectureRepository = lectureRepository;
         }
 
-        public async Task ProcessLectureAsync(string lectureId)
+        public async Task ProcessLectureAsync(Guid jobId)
         {
-            _logger.LogInformation($"Processing lecture generation job with ID: {lectureId}");
+            _logger.LogInformation($"Processing lecture generation job with ID: {jobId}");
 
-            var lecture = await _lectureProcessingRepository.GetJobByIdAsync(lectureId);
+            var job = await _lectureProcessingRepository.GetJobByIdAsync(jobId);
 
-            lecture.Status = LectureGenerationStatus.Processing;
+            job.Status = LectureGenerationStatus.Processing;
 
             await _uof.SaveChangesAsync();
 
 
-            var transcriptTask = await _transcriptionService.TranscribeAudioAsync(lectureId);
+            var transcript = await _transcriptionService.TranscribeAudioAsync(job.FilePath);
 
-            var summary = await _llmService.AnalyzeLectureAsync(transcriptTask);
+            LectureAnalysis summary = await _llmService.AnalyzeLectureAsync(transcript);
 
+            //TODO: add the transcript to the lecture object
+            //TODO: add relationship between JobProcessing and Lecture entities
             var lectureAnalysis = new Lecture
             {
                 Title = summary.Title,
@@ -52,11 +55,13 @@ namespace IntelliLoop.Web.Services
                 Notes = summary.Notes
             };
 
+
             await _lectureRepository.AddLectureAsync(lectureAnalysis);
+            job.Status = LectureGenerationStatus.Completed;
 
             await _uof.SaveChangesAsync();
 
-            _logger.LogInformation($"Completed lecture generation job with ID: {lectureId}");
+            _logger.LogInformation($"Completed lecture generation job with ID: {jobId}");
 
         }
     }
