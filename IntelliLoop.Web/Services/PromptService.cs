@@ -1,6 +1,6 @@
 ﻿using IntelliLoop.Core.Interfaces;
 
-namespace IntelliLoop.Web.Services.AI
+namespace IntelliLoop.Web.Services
 {
     public class PromptService : IPromptService
     {

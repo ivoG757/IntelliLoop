@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace IntelliLoop.Core.Entities
+namespace IntelliLoop.Core.Entities.Models
 {
     public class Lecture
     {

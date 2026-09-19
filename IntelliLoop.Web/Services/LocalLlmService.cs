@@ -3,7 +3,7 @@ using IntelliLoop.Core.Interfaces;
 using Microsoft.Extensions.AI;
 using System.Text;
 
-namespace IntelliLoop.Web.Services.AI
+namespace IntelliLoop.Web.Services
 {
     public class LocalLlmService : ILlmService
     {

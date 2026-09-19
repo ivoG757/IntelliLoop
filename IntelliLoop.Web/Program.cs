@@ -1,10 +1,8 @@
-using FFMpegCore;
-using IntelliLoop.Core.Entities;
 using IntelliLoop.Core.Interfaces;
+using IntelliLoop.Core.Repository;
 using IntelliLoop.Web.Data;
-using IntelliLoop.Web.Services.AI;
-using IntelliLoop.Web.Services.Background;
-using IntelliLoop.Web.Services.Transcription;
+using IntelliLoop.Web.Repositories;
+using IntelliLoop.Web.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OllamaSharp;
@@ -16,20 +14,32 @@ using Whisper.net.Ggml;
 var builder = WebApplication.CreateBuilder(args);
 
 Console.OutputEncoding = Encoding.UTF8;
-// Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+builder.Services.AddDbContext<IntelliLoopDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+    .AddEntityFrameworkStores<IntelliLoopDbContext>();
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IPromptService, PromptService>();
 
+builder.Services.AddScoped<ILectureGenerationService, LectureGenerationService>();
 
-// Create Whisper model
+builder.Services.AddScoped<LectureProcessingService>();
+
+builder.Services.AddScoped<ILectureProcessingRepository, LectureProcessingRepository>();
+
+builder.Services.AddScoped<ILectureRepository, LectureRepository>();
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddScoped<IFileStorage, FileStorage>();
+
 
 if (!File.Exists(builder.Configuration["Whisper:ModelPath"]))
 {
@@ -48,7 +58,7 @@ builder.Services.AddSingleton(_ =>
     });
 
     return channel;
-}); // 
+});
 
 var httpClient = new HttpClient
 {

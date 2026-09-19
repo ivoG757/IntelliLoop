@@ -1,4 +1,4 @@
-﻿using IntelliLoop.Core.Entities;
+﻿using IntelliLoop.Core.Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

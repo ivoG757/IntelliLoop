@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Data\Migrations\" />
     <Folder Include="Extensions\" />
     <Folder Include="Prompts\Quiz\" />
   </ItemGroup>

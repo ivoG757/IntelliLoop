@@ -1,7 +1,7 @@
 ﻿using IntelliLoop.Core.Entities;
 using System.Threading.Channels;
 
-namespace IntelliLoop.Web.Services.Background
+namespace IntelliLoop.Web.Services
 {
     public class LectureWorker : BackgroundService
     {

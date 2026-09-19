@@ -1,5 +1,5 @@
-﻿using IntelliLoop.Core.Entities;
-using IntelliLoop.Core.Entities.Enums;
+﻿using IntelliLoop.Core.Entities.Enums;
+using IntelliLoop.Core.Entities.Models;
 using Microsoft.AspNetCore.Http;
 namespace IntelliLoop.Core.Interfaces
 {

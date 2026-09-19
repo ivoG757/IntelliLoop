@@ -1,6 +1,7 @@
 ﻿using IntelliLoop.Core.DTOs;
 using IntelliLoop.Core.Entities;
 using IntelliLoop.Core.Entities.Enums;
+using IntelliLoop.Core.Entities.Models;
 using IntelliLoop.Core.Interfaces;
 using IntelliLoop.Core.Repository;
 
@@ -60,6 +61,8 @@ namespace IntelliLoop.Web.Services
             job.Status = LectureGenerationStatus.Completed;
 
             await _uof.SaveChangesAsync();
+            //testing - remove later
+            Console.WriteLine($"{lectureAnalysis.Title}\n{lectureAnalysis.Summary}\n{summary.KeyConcepts}\n{summary.Notes}");
 
             _logger.LogInformation($"Completed lecture generation job with ID: {jobId}");
 

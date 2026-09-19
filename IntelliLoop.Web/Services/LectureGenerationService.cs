@@ -1,5 +1,6 @@
 ﻿using IntelliLoop.Core.Entities;
 using IntelliLoop.Core.Entities.Enums;
+using IntelliLoop.Core.Entities.Models;
 using IntelliLoop.Core.Interfaces;
 using IntelliLoop.Core.Repository;
 using System.Runtime.CompilerServices;

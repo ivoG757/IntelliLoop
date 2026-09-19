@@ -7,7 +7,7 @@ using System.Text;
 using Whisper.net;
 using Whisper.net.Ggml;
 
-namespace IntelliLoop.Web.Services.Transcription
+namespace IntelliLoop.Web.Services
 {
     public class TranscriptionService : ITranscriptionService, IDisposable
     {
@@ -29,8 +29,6 @@ namespace IntelliLoop.Web.Services.Transcription
             _processor = _whisperFactory.CreateBuilder().WithLanguage(configuration["Whisper:Language"] ?? "auto").Build(); 
         }
 
-
-
         public void Dispose()
         {
             _whisperFactory?.Dispose();
@@ -48,7 +46,7 @@ namespace IntelliLoop.Web.Services.Transcription
                 .OutputToFile(audioFilePath + 1, overwrite: true,
                 options => options
                 .WithAudioSamplingRate(16000)
-                .WithCustomArgument("-ac 1") // mono channel
+                .WithCustomArgument("-ac 1")
                 .WithAudioCodec("pcm_s16le")
                 .ForceFormat("wav")
                 ).ProcessAsynchronously();
