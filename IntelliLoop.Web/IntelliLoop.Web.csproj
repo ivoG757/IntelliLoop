@@ -26,8 +26,8 @@
 
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
-    <Folder Include="Extensions\" />
     <Folder Include="Prompts\Quiz\" />
+    <Folder Include="wwwroot\Images\" />
   </ItemGroup>
 
 </Project>
