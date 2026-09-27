@@ -28,6 +28,11 @@
 
 }
 
+.field-validation-error,
+.field-validation-valid {
+    display: block;
+    min-height: 24px;
+}
 
 @media (prefers-color-scheme: dark) {
     .account-container {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using IntelliLoop.Web.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace IntelliLoop.Web.Controllers
 {
@@ -12,6 +13,18 @@ namespace IntelliLoop.Web.Controllers
 
         [HttpGet]
         public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult VerifyEmail()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult ChangePassword()
         {
             return View();
         }
