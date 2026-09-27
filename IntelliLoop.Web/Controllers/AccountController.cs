@@ -10,10 +10,10 @@ namespace IntelliLoop.Web.Controllers
             return View();
         }
 
-        //[HttpPost]
-        //public IActionResult Login([FromForm] )
-        //{
-        //    return View();
-        //}
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
     }
 }
