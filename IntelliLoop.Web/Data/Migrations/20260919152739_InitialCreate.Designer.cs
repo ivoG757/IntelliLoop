@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace IntelliLoop.Web.Migrations
+namespace IntelliLoop.Web.Data.Migrations
 {
     [DbContext(typeof(IntelliLoopDbContext))]
     [Migration("20260919152739_InitialCreate")]

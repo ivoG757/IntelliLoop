@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace IntelliLoop.Web.Migrations
+namespace IntelliLoop.Web.Data.Migrations
 {
     [DbContext(typeof(IntelliLoopDbContext))]
     partial class IntelliLoopDbContextModelSnapshot : ModelSnapshot

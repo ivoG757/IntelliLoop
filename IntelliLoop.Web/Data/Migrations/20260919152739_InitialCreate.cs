@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace IntelliLoop.Web.Migrations
+namespace IntelliLoop.Web.Data.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration

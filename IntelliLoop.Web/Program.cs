@@ -26,8 +26,6 @@ builder.Services.AddApplicationServices();
 
 await builder.Services.ConfigureWhisperAsync(builder.Configuration);
 
-builder.Services.AddSingleton<ITranscriptionService, TranscriptionService>();
-
 builder.Services.AddSingleton(_ =>
 {
     var channel = Channel.CreateBounded<Guid>(new BoundedChannelOptions(100) 

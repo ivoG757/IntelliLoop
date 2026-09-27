@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace IntelliLoop.Web.Migrations
+namespace IntelliLoop.Web.Data.Migrations
 {
     /// <inheritdoc />
     public partial class IdentityConfiguration : Migration

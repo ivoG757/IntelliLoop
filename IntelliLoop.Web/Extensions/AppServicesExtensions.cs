@@ -23,6 +23,8 @@ namespace IntelliLoop.Web.Extensions
 
             services.AddScoped<IFileStorage, FileStorage>();
 
+            services.AddSingleton<ITranscriptionService, TranscriptionService>();
+
             services.AddHostedService<LectureWorker>();
 
             return services;

@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Prompts\Quiz\**" />
+    <Content Remove="Prompts\Quiz\**" />
+    <EmbeddedResource Remove="Prompts\Quiz\**" />
+    <None Remove="Prompts\Quiz\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FFMpegCore" Version="5.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.8" />
@@ -25,7 +32,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Prompts\Quiz\" />
     <Folder Include="wwwroot\Images\" />
   </ItemGroup>
 
