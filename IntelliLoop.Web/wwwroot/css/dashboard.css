@@ -11,3 +11,19 @@
     min-width: 0;
     flex: 1;
 }
+
+:root {
+    --background: #ffffff;
+    --foreground: #37352f;
+    --sidebar: #f7f7f5;
+    --muted: #efefed;
+    --muted-foreground: #787774;
+    --border: #e7e7e5;
+    --primary: #37352f;
+    --primary-foreground: #ffffff;
+    --accent: #e9f2fb;
+    --accent-foreground: #2f6f9f;
+    --success: #448361;
+    --shadow: rgba(15, 15, 15, .08);
+    --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}

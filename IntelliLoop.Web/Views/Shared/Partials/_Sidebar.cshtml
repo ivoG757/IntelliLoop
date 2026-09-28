@@ -4,25 +4,25 @@
         <span class="brand-mark">
             <i class="bi bi-book"></i>
         </span> 
-        IntelliLoop
+        IntelliLoop @*TODO: ADD REAL VALUES VIA VIEWMODELS*@
     </div>
 
     <h2 class="sidebar-heading">My Lectures</h2>
 
     <nav class="sidebar-list">
-        <a class="side-action" href="#">
+        <a class="side-action" asp-action="Index" asp-controller="Lecture">
             <i class="bi bi-plus-lg"></i>
             <span>New Lecture</span>
         </a>
 
         <div class="side-divider"></div>
 
-        <a class="lecture-link active" href="#">
+        <a class="lecture-link active" href="rndbullshit">
             <i class="bi bi-file-earmark-text"></i>
             <span>Biology - Cell Division</span>
         </a>
 
-        <a class="lecture-link processing" href="#">
+        <a class="lecture-link processing" asp-action="Lecture" asp-controller="Lecture">
             <span class="status-pulse"></span>
             <span>Processing...</span>
         </a>
