@@ -9,9 +9,13 @@
 
   <ItemGroup>
     <Compile Remove="Prompts\Quiz\**" />
+    <Compile Remove="wwwroot\Images\**" />
     <Content Remove="Prompts\Quiz\**" />
+    <Content Remove="wwwroot\Images\**" />
     <EmbeddedResource Remove="Prompts\Quiz\**" />
+    <EmbeddedResource Remove="wwwroot\Images\**" />
     <None Remove="Prompts\Quiz\**" />
+    <None Remove="wwwroot\Images\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,10 +33,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IntelliLoop.Core\IntelliLoop.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\Images\" />
   </ItemGroup>
 
 </Project>

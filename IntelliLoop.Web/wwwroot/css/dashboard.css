@@ -1,0 +1,13 @@
+﻿body {
+
+}
+.workspace {
+    display: flex;
+    min-height: 100vh;
+    background: var(--background);
+}
+
+.main {
+    min-width: 0;
+    flex: 1;
+}
