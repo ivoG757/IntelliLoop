@@ -3,10 +3,15 @@
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
 }
 
-<div class="container mt-5">
-    <h1 class="display-4">Upload lecture: </h1>
-    <p class="text-muted">
-        Upload an audio recording and IntelliLoop will process it.
+<section class="empty-state">
+    <div class="empty-symbol">
+        <i class="bi bi-upload"></i>
+    </div>
+
+    <h1>Turn your lecture into knowledge</h1>
+
+    <p>
+        Upload an audio recording and IntelliLoop will create structured study notes.
     </p>
 
     <form asp-controller="Lecture" asp-action="Upload" method="post" enctype="multipart/form-data">
@@ -19,4 +24,6 @@
             Process Lecture
         </button>
     </form>
-</div>
+
+    <span class="file-hint">MP3 · WAV · M4A</span>
+</section>

@@ -1,13 +1,61 @@
-﻿
+﻿@Model IntelliLoop.Web.Models.LectureViewModel
 @{
     ViewData["Title"] = "Processing Lecture";
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
 }
 
-<div class="container mt-5">
-    <h1>Lecture Processing</h1>
+ <article class="document">
+        <div class="document-kicker"><i class="bi bi-book"></i>Study notes <span class="kicker-dot"></span>Biology</div>
+        <h1>Biology - Cell Division</h1>
+        <div class="document-subtitle"><i class="bi bi-clock"></i>Lecture recording <span>·</span>24 min <span>·</span>Sample lecture</div>
 
-    <p>
-        Your lecture has been queued for processing.
-    </p>
-</div>
+        <!-- AUDIO PLAYER -->
+        <div class="audio-player">
+          <button class="play-btn" aria-label="Play lecture"><i class="bi bi-play-fill"></i></button>
+          <div class="player-info">
+            <span class="player-label">Original lecture audio</span>
+            <div class="wave-row" aria-hidden="true">
+              <i class="wave-bar played h1"></i><i class="wave-bar played h3"></i><i class="wave-bar played h6"></i><i class="wave-bar played h2"></i><i class="wave-bar played h5"></i><i class="wave-bar played h1"></i><i class="wave-bar played h4"></i><i class="wave-bar played h2"></i><i class="wave-bar played h6"></i><i class="wave-bar played h3"></i><i class="wave-bar played h1"></i><i class="wave-bar played h5"></i><i class="wave-bar played h2"></i><i class="wave-bar played h6"></i><i class="wave-bar played h2"></i><i class="wave-bar played h4"></i><i class="wave-bar played h6"></i>
+              <i class="wave-bar h3"></i><i class="wave-bar h1"></i><i class="wave-bar h5"></i><i class="wave-bar h6"></i><i class="wave-bar h2"></i><i class="wave-bar h4"></i><i class="wave-bar h1"></i><i class="wave-bar h5"></i><i class="wave-bar h6"></i><i class="wave-bar h2"></i><i class="wave-bar h4"></i><i class="wave-bar h1"></i><i class="wave-bar h6"></i><i class="wave-bar h3"></i><i class="wave-bar h2"></i><i class="wave-bar h5"></i><i class="wave-bar h1"></i><i class="wave-bar h4"></i><i class="wave-bar h6"></i><i class="wave-bar h2"></i><i class="wave-bar h5"></i><i class="wave-bar h1"></i>
+            </div>
+          </div>
+          <span class="player-time">00:00 / 24:18</span>
+        </div>
+
+        <!-- CONTENT SECTION -->
+        <section class="document-section">
+          <h2 class="section-title">Summary</h2>
+          <p class="body-copy">Cell division is the process that allows organisms to grow, repair damaged tissue, and reproduce. This lecture explores the stages of the cell cycle, how chromosomes are distributed during mitosis, and the role of checkpoints in keeping division accurate.</p>
+        </section>
+
+        <!-- CONCEPT LIST -->
+        <section class="document-section">
+          <h2 class="section-title">Key Concepts</h2>
+          <ul class="concept-list">
+            <li><span class="concept-bullet"></span><div><strong>Cell cycle</strong> <span>— The sequence of growth, DNA replication, and division.</span></div></li>
+            <li><span class="concept-bullet"></span><div><strong>Mitosis</strong> <span>— Nuclear division producing two genetically identical nuclei.</span></div></li>
+            <li><span class="concept-bullet"></span><div><strong>Cytokinesis</strong> <span>— Division of the cytoplasm into two daughter cells.</span></div></li>
+            <li><span class="concept-bullet"></span><div><strong>Checkpoints</strong> <span>— Control points that verify the cell is ready to advance.</span></div></li>
+          </ul>
+        </section>
+
+        <!-- NOTES -->
+        <section class="document-section">
+          <h2 class="section-title">Notes</h2>
+          <h3 class="notes-heading">The cell cycle</h3>
+          <p class="body-copy">The cell cycle has two broad parts: interphase, when the cell grows and copies its DNA, and the mitotic phase, when it divides.</p>
+          <h3 class="notes-heading">Stages of mitosis</h3>
+          <ol class="notes-list">
+            <li><strong>Prophase:</strong> Chromosomes condense and the mitotic spindle begins to form.</li>
+            <li><strong>Metaphase:</strong> Chromosomes line up along the center of the cell.</li>
+            <li><strong>Anaphase:</strong> Sister chromatids separate and move to opposite poles.</li>
+            <li><strong>Telophase:</strong> New nuclear envelopes form around each set of chromosomes.</li>
+          </ol>
+        </section>
+
+        <!-- DISCLOSURE / TRANSCRIPT -->
+        <details class="transcript">
+          <summary><i class="bi bi-file-earmark-text"></i>Transcript <i class="bi bi-chevron-down"></i></summary>
+          <div class="transcript-copy">This is a sample lecture workspace. A full original transcription would appear here after processing.</div>
+        </details>
+      </article>
