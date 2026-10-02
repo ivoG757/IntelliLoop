@@ -1,0 +1,110 @@
+﻿.empty-state, .process-state {
+    min-height: calc(100vh - 58px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 35px 24px 95px;
+}
+
+.empty-symbol {
+    height: 64px;
+    width: 64px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    display: grid;
+    place-items: center;
+    color: var(--foreground);
+    box-shadow: 0 4px 16px var(--shadow);
+    margin-bottom: 27px;
+    font-size: 25px;
+}
+
+.empty-state h1, .process-state h1 {
+    font-size: 29px;
+    font-weight: 700;
+    margin-bottom: 11px;
+}
+
+.empty-state p, .process-state p {
+    max-width: 420px;
+    color: var(--muted-foreground);
+    line-height: 1.65;
+    font-size: 14px;
+    margin: 0 0 25px;
+}
+
+.primary-btn {
+    background: var(--primary);
+    color: var(--primary-foreground);
+    border: 1px solid var(--primary);
+    border-radius: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 9px 15px;
+    box-shadow: 0 1px 2px var(--shadow);
+}
+
+    .primary-btn:hover {
+        opacity: .85;
+    }
+
+.file-hint {
+    margin-top: 14px;
+    font-size: 11px;
+    color: var(--muted-foreground);
+}
+
+.process-list {
+    width: min(100%, 350px);
+    list-style: none;
+    margin: 4px 0 0;
+    padding: 0;
+    text-align: left;
+}
+
+    .process-list li {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        height: 49px;
+        border-bottom: 1px solid var(--border);
+        color: var(--muted-foreground);
+        font-size: 13px;
+    }
+
+        .process-list li:last-child {
+            border-bottom: 0;
+        }
+
+.step-icon {
+    height: 21px;
+    width: 21px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    flex: none;
+}
+
+.step-done .step-icon {
+    background: var(--success);
+    border-color: var(--success);
+    color: var(--background);
+}
+
+.step-current {
+    color: var(--foreground) !important;
+    font-weight: 600;
+}
+
+    .step-current .step-icon {
+        border: 2px solid var(--accent-foreground);
+        border-top-color: transparent;
+        animation: spin 1s linear infinite;
+    }
