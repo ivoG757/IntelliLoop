@@ -5,7 +5,7 @@ namespace IntelliLoop.Core.Entities.Models
     public class Lecture
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         public string Title { get; set; } = null!;
@@ -14,5 +14,10 @@ namespace IntelliLoop.Core.Entities.Models
         public string Summary { get; set; } = null!;
         public ICollection<string> KeyConcepts { get; set; } = new List<string>();
         public ICollection<NoteSection> Notes { get; set; } = new List<NoteSection>();
+        Guid? ProcessingJobId { get; set; }
+        ProcessingJob? ProcessingJob { get; set; }
+
+        [Required]
+        public string Transcript { get; set; } = null!;
     }
 }

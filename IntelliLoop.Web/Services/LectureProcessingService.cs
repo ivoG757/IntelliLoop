@@ -37,25 +37,29 @@ namespace IntelliLoop.Web.Services
 
             var job = await _lectureProcessingRepository.GetJobByIdAsync(jobId);
 
-            job.Status = LectureGenerationStatus.Processing;
+            job.Status = LectureGenerationStatus.Transcribing;
 
             await _uof.SaveChangesAsync();
 
-
+            _logger.LogInformation($"Transcribing lecture generation job with ID: {jobId}");
             var transcript = await _transcriptionService.TranscribeAudioAsync(job.FilePath);
+
+            job.Status = LectureGenerationStatus.Extracting;
+
+            await _uof.SaveChangesAsync();
 
             LectureAnalysis summary = await _llmService.AnalyzeLectureAsync(transcript);
 
-            //TODO: add the transcript to the lecture object
-            //TODO: add relationship between JobProcessing and Lecture entities
+            _logger.LogInformation($"Extracting lecture generation job with ID: {jobId}");
+
             var lectureAnalysis = new Lecture
             {
                 Title = summary.Title,
                 Summary = summary.Summary,
                 KeyConcepts = summary.KeyConcepts,
-                Notes = summary.Notes
+                Notes = summary.Notes,
+                Transcript = transcript
             };
-
 
             await _lectureRepository.AddLectureAsync(lectureAnalysis);
             job.Status = LectureGenerationStatus.Completed;

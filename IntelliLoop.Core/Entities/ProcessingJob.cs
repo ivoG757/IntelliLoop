@@ -1,8 +1,7 @@
 ﻿using IntelliLoop.Core.Entities.Enums;
-using System;
-using System.Collections.Generic;
+using IntelliLoop.Core.Entities.Models;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IntelliLoop.Core.Entities
 {
@@ -16,5 +15,9 @@ namespace IntelliLoop.Core.Entities
         public DateTime? StartedAt { get; set; }
         public DateTime? CompletedAt { get; set; }
         public string? ErrorMessage { get; set; }
+
+        [ForeignKey(nameof(Lecture))]
+        public Guid? LectureId { get; set; }
+        public Lecture? Lecture { get; set; }
     }
 }

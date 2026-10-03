@@ -1,0 +1,34 @@
+﻿
+@{
+    ViewData["Title"] = "Lecture generation";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/upload.css" asp-append-version="true" />
+}
+
+<section class="empty-state">
+    <div class="empty-symbol">
+        <i class="bi bi-upload"></i>
+    </div>
+
+    <h1>Turn your lecture into knowledge</h1>
+
+    <p>
+        Upload an audio recording and IntelliLoop will create structured study notes.
+    </p>
+
+    <form asp-controller="Lecture" asp-action="Upload" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="file" class="form-label">Lecture audio</label>
+            <input type="file" class="form-control" id="file" name="file" accept="audio/*" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Process Lecture
+        </button>
+    </form>
+
+    <span class="file-hint">MP3 · WAV · M4A</span>
+</section>

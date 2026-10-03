@@ -1,6 +1,8 @@
-﻿using IntelliLoop.Core.Interfaces;
+﻿using IntelliLoop.Core.Entities;
+using IntelliLoop.Core.Entities.Enums;
+using IntelliLoop.Core.Interfaces;
+using IntelliLoop.Web.Models;
 using Microsoft.AspNetCore.Mvc;
-using IntelliLoop.Core.Entities.Models;
 
 namespace IntelliLoop.Web.Controllers
 {
@@ -16,7 +18,14 @@ namespace IntelliLoop.Web.Controllers
             _lectureGenerationService = lectureGenerationService;
             _logger = logger;
         }
-        public IActionResult Index()
+        public IActionResult Index([FromRoute] string id)
+        {
+            //TODO: Implement the logic to display the generated lecture based on the job ID.
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Upload()
         {
             return View();
         }
@@ -36,31 +45,43 @@ namespace IntelliLoop.Web.Controllers
 
             Guid jobId = await _lectureGenerationService.QueueLectureGenerationAsync(file, userId);
 
-            return RedirectToAction(nameof(Lecture),
+            return RedirectToAction(nameof(Processing),
                 new
                 {
-                    jobId = jobId
+                    Id = jobId
                 });
         }
 
         [HttpGet]
-        public async Task<IActionResult> Lecture(string id)
+        public async Task<IActionResult> Processing([FromRoute] string id)
         {
-            var IdIsGuid = Guid.TryParse(id, out var lectureId);
+            var IdIsGuid = Guid.TryParse(id, out var jobId);
 
-            if(!IdIsGuid)
+            if (!IdIsGuid)
             {
-                ModelState.AddModelError("Id", "Please provide lecture id");
+                return BadRequest(ModelState);
             }
 
-            Lecture job = await _lectureGenerationService.GetLectureByIdAsync(lectureId);
+            ProcessingJob job = await _lectureGenerationService.GetLectureJobByIdAsync(jobId);
+
+            
 
             if (job == null)
             {
                 return NotFound();
             }
 
-            return View(job);
+            if (job.Status != LectureGenerationStatus.Completed)
+            {
+                return View(new ProcessingJobViewModel
+                {
+                    Id = job.Id,
+                    Status = job.Status,
+                });
+            }
+
+            return RedirectToAction(nameof(Index), new { id = job.Id });
         }
     }
 }
+

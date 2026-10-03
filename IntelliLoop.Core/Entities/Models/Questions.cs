@@ -6,10 +6,10 @@ namespace IntelliLoop.Core.Entities.Models
     public class Questions
     {
         [Key]
-        public int id { get; set; }
+        public Guid Id { get; set; }
 
         [ForeignKey(nameof(Lecture))]
-        public int LectureId { get; set; }
+        public Guid LectureId { get; set; }
         public Lecture lecture { get; set; } = null!;
 
         [Required]

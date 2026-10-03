@@ -6,7 +6,7 @@ namespace IntelliLoop.Core.Entities.Models
     public class NoteSection
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         public string Title { get; set; } = null!;
@@ -15,7 +15,7 @@ namespace IntelliLoop.Core.Entities.Models
         public string Content { get; set; } = null!;
 
         [ForeignKey(nameof(Lecture))]
-        public int LectureId { get; set; }
+        public Guid LectureId { get; set; }
         public Lecture lecture { get; set; } = null!;
     }
 }

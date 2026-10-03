@@ -50,9 +50,10 @@ namespace IntelliLoop.Web.Services
             return job.Id;
         }
 
-        public async Task<Lecture> GetLectureByIdAsync(Guid jobId)
+        public async Task<ProcessingJob> GetLectureJobByIdAsync(Guid jobId)
         {
-            return new Lecture();
+            var job = await _lectureGenerationRepository.GetJobByIdAsync(jobId);
+            return job;
         }
     }
 }

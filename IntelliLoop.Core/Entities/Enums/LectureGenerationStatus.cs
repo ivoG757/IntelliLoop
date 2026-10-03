@@ -7,7 +7,9 @@ namespace IntelliLoop.Core.Entities.Enums
     public enum LectureGenerationStatus
     {
         Queued,
-        Processing,
+        Transcribing,
+        Extracting,
+        Formatting,
         Completed,
         Failed
     }

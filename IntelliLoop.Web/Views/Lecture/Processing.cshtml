@@ -1,0 +1,48 @@
+﻿@model ProcessingJobViewModel
+@{
+    ViewData["Title"] = "Processing Lecture";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+
+    var steps = new[]
+    {
+        "Uploading audio",
+        "Transcribing lecture",
+        "Extracting knowledge",
+        "Creating study notes"
+    };
+
+    int currentStep = (int)Model.Status;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/processing.css" asp-append-version="true" />
+}
+
+<section class="process-state">
+    <div class="empty-symbol">
+        <i class="bi bi-file-earmark-music"></i>
+    </div>
+
+    <h1>Processing your material...</h1>
+    <p>Your audio is being prepared.</p>
+
+    <ol class="process-list">
+        @for (int i = 0; i < steps.Length; i++)
+        {
+            bool completed = i < currentStep;
+            bool current = i == currentStep;
+
+            <li class="@(completed ? "step-done" : current ? "step-current" : "")">
+                <span class="step-icon">
+                    @if (completed)
+                    {
+                        <i class="bi bi-check"></i>
+                    }
+                </span>
+
+                @steps[i]
+            </li>
+        }
+    </ol>
+</section>
+
