@@ -1,6 +1,8 @@
 ﻿using IntelliLoop.Core.Entities;
+using IntelliLoop.Core.Entities.Models;
 using IntelliLoop.Core.Repository;
 using IntelliLoop.Web.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace IntelliLoop.Web.Repositories
 {
@@ -19,6 +21,12 @@ namespace IntelliLoop.Web.Repositories
         public async Task<ProcessingJob?> GetJobByIdAsync(Guid jobId)
         {
             return await _context.ProcessingJobs.FindAsync(jobId);
+        }
+
+        public async Task<Lecture?> GetLectureByJobIdAsync(Guid jobId)
+        {
+            return await _context.Lectures
+                .FirstOrDefaultAsync(l => l.ProcessingJob!.Id == jobId);
         }
     }
 }

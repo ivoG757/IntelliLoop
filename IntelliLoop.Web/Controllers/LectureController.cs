@@ -18,10 +18,12 @@ namespace IntelliLoop.Web.Controllers
             _lectureGenerationService = lectureGenerationService;
             _logger = logger;
         }
-        public IActionResult Index([FromRoute] string id)
+        public async Task<IActionResult> Index([FromRoute] string id)
         {
             //TODO: Implement the logic to display the generated lecture based on the job ID.
-            return View();
+            var IdIsGuid = Guid.TryParse(id, out var jobId);
+            var lecture = await _lectureGenerationService.GetLectureByJobIdAsync(jobId);
+            return View(lecture);
         }
 
         [HttpGet]
@@ -55,6 +57,7 @@ namespace IntelliLoop.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Processing([FromRoute] string id)
         {
+
             var IdIsGuid = Guid.TryParse(id, out var jobId);
 
             if (!IdIsGuid)
@@ -63,8 +66,6 @@ namespace IntelliLoop.Web.Controllers
             }
 
             ProcessingJob job = await _lectureGenerationService.GetLectureJobByIdAsync(jobId);
-
-            
 
             if (job == null)
             {

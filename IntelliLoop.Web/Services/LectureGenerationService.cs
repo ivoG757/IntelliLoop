@@ -3,7 +3,6 @@ using IntelliLoop.Core.Entities.Enums;
 using IntelliLoop.Core.Entities.Models;
 using IntelliLoop.Core.Interfaces;
 using IntelliLoop.Core.Repository;
-using System.Runtime.CompilerServices;
 using System.Threading.Channels;
 
 namespace IntelliLoop.Web.Services
@@ -53,7 +52,19 @@ namespace IntelliLoop.Web.Services
         public async Task<ProcessingJob> GetLectureJobByIdAsync(Guid jobId)
         {
             var job = await _lectureGenerationRepository.GetJobByIdAsync(jobId);
+            if (job == null)
+            {
+                _logger.LogWarning($"Lecture generation job with ID: {jobId} not found.");
+                return null;
+            }
             return job;
+        }
+
+        public async Task<Lecture> GetLectureByJobIdAsync(Guid jobId)
+        {
+            var lecture = await _lectureGenerationRepository.GetLectureByJobIdAsync(jobId);
+
+            return lecture;
         }
     }
 }

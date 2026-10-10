@@ -1,10 +1,5 @@
-using IntelliLoop.Core.Interfaces;
-using IntelliLoop.Web.Services;
-using OllamaSharp;
 using System.Text;
 using System.Threading.Channels;
-using Whisper.net.Ggml;
-
 using IntelliLoop.Web.Extensions;
 
 
@@ -12,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 Console.OutputEncoding = Encoding.UTF8;
 
+builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
 builder.Services.AddDatabase(builder.Configuration);

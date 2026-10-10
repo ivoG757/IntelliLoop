@@ -7,7 +7,7 @@ using IntelliLoop.Core.Repository;
 
 namespace IntelliLoop.Web.Services
 {
-    public class LectureProcessingService
+    public class LectureProcessingService //TODO: Add an interface 
     {
         private readonly ILlmService _llmService;
         private readonly ITranscriptionService _transcriptionService;
@@ -37,12 +37,18 @@ namespace IntelliLoop.Web.Services
 
             var job = await _lectureProcessingRepository.GetJobByIdAsync(jobId);
 
+            if (job == null)
+            {
+                _logger.LogError($"Lecture generation job with ID: {jobId} not found.");
+                return;
+            }
+
             job.Status = LectureGenerationStatus.Transcribing;
 
             await _uof.SaveChangesAsync();
 
             _logger.LogInformation($"Transcribing lecture generation job with ID: {jobId}");
-            var transcript = await _transcriptionService.TranscribeAudioAsync(job.FilePath);
+            string transcript = await _transcriptionService.TranscribeAudioAsync(job.FilePath);
 
             job.Status = LectureGenerationStatus.Extracting;
 
@@ -52,21 +58,36 @@ namespace IntelliLoop.Web.Services
 
             _logger.LogInformation($"Extracting lecture generation job with ID: {jobId}");
 
-            var lectureAnalysis = new Lecture
+            var lecture = new Lecture
             {
                 Title = summary.Title,
                 Summary = summary.Summary,
                 KeyConcepts = summary.KeyConcepts,
                 Notes = summary.Notes,
-                Transcript = transcript
+                Transcript = transcript,
+                ProcessingJob = job
             };
 
-            await _lectureRepository.AddLectureAsync(lectureAnalysis);
+            await _lectureRepository.AddLectureAsync(lecture);
+
             job.Status = LectureGenerationStatus.Completed;
 
-            await _uof.SaveChangesAsync();
+            Console.WriteLine("DEBUG 1: Before final SaveChanges");
+            // my program stops here, wtf
+            try
+            {
+                await _uof.SaveChangesAsync();
+                Console.WriteLine("DEBUG 2: Final SaveChanges completed");
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"DEBUG ERROR: {ex}");
+                throw;
+            }
+            Console.WriteLine("DEBUG 3: After final SaveChanges");
+
             //testing - remove later
-            Console.WriteLine($"{lectureAnalysis.Title}\n{lectureAnalysis.Summary}\n{summary.KeyConcepts}\n{summary.Notes}");
+            Console.WriteLine($"{lecture.Title}\n{lecture.Summary}\n{summary.KeyConcepts}\n{summary.Notes}");
 
             _logger.LogInformation($"Completed lecture generation job with ID: {jobId}");
 

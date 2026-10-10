@@ -8,5 +8,6 @@ namespace IntelliLoop.Core.Interfaces
     {
         public Task<Guid> QueueLectureGenerationAsync(IFormFile file, string userId);
         public Task<ProcessingJob> GetLectureJobByIdAsync(Guid jobId);
+        public Task<Lecture> GetLectureByJobIdAsync(Guid jobId);
     }
 }

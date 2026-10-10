@@ -1,4 +1,6 @@
-﻿<aside class="sidebar" aria-label="Workspace navigation">
+﻿@* @model SidebarViewModel *@
+
+<aside class="sidebar" aria-label="Workspace navigation">
     <div class="brand">
 
         <span class="brand-mark">
@@ -22,9 +24,9 @@
             <span>Biology - Cell Division</span>
         </a>
 
-        <a class="lecture-link processing" asp-action="Lecture" asp-controller="Lecture">
+        <a class="lecture-link processing" asp-controller="Lecture" asp-action="Lecture" @*asp-route-id="@Model.Id"*@>
             <span class="status-pulse"></span>
-            <span>Processing...</span>
+            @* <span>@(Model.Title ?? "processing")</span> *@
         </a>
     </nav>
 

@@ -14,8 +14,7 @@ namespace IntelliLoop.Core.Entities.Models
         public string Summary { get; set; } = null!;
         public ICollection<string> KeyConcepts { get; set; } = new List<string>();
         public ICollection<NoteSection> Notes { get; set; } = new List<NoteSection>();
-        Guid? ProcessingJobId { get; set; }
-        ProcessingJob? ProcessingJob { get; set; }
+        public ProcessingJob? ProcessingJob { get; set; }
 
         [Required]
         public string Transcript { get; set; } = null!;

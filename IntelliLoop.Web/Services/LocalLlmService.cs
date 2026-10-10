@@ -21,6 +21,7 @@ namespace IntelliLoop.Web.Services
 
         public async Task<LectureAnalysis> AnalyzeLectureAsync(string transcript)
         {
+
             var extractionPrompts = _promptService.GetExtractionPrompts();
 
             var extractionMessages = new List<ChatMessage>
@@ -29,20 +30,25 @@ namespace IntelliLoop.Web.Services
                 new ChatMessage(ChatRole.User, extractionPrompts["user"][0] + $"{Environment.NewLine}{transcript}")
             };
 
-            var analyzedInfo = await _client.GetResponseAsync(extractionMessages);
+            ////var analyzedInfo = await _client.GetResponseAsync(extractionMessages);
 
+            //var formattingPrompts = _promptService.GetFormattingPrompts();
 
-            var formattingPrompts = _promptService.GetFormattingPrompts();
+            //var formattingMessages = new List<ChatMessage>
+            //{
+            //    new ChatMessage(ChatRole.System, formattingPrompts["system"][0]),
+            //    new ChatMessage(ChatRole.User, formattingPrompts["user"][0] + $"{Environment.NewLine}{analyzedInfo.Text}")
+            //};
 
-            var formattingMessages = new List<ChatMessage>
+            //var structuredInfo = await _client.GetResponseAsync<LectureAnalysis>(formattingMessages);
+            var structuredInfo = new LectureAnalysis 
             {
-                new ChatMessage(ChatRole.System, formattingPrompts["system"][0]),
-                new ChatMessage(ChatRole.User, formattingPrompts["user"][0] + $"{Environment.NewLine}{analyzedInfo.Text}")
+                Title = "structuredInfo.Result.Title",
+                Summary = "structuredInfo.Result.Summary",
+                KeyConcepts = new(),
+                Notes = new()
             };
-
-            var structuredInfo = await _client.GetResponseAsync<LectureAnalysis>(formattingMessages);
-
-            return structuredInfo.Result;
+            return structuredInfo;
         }
     }
 }

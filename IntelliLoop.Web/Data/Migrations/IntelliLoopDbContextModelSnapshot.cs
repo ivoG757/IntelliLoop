@@ -32,6 +32,9 @@ namespace IntelliLoop.Web.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("ProcessingJobId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Summary")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -123,7 +126,9 @@ namespace IntelliLoop.Web.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LectureId");
+                    b.HasIndex("LectureId")
+                        .IsUnique()
+                        .HasFilter("[LectureId] IS NOT NULL");
 
                     b.ToTable("ProcessingJobs");
                 });
@@ -355,8 +360,8 @@ namespace IntelliLoop.Web.Data.Migrations
             modelBuilder.Entity("IntelliLoop.Core.Entities.ProcessingJob", b =>
                 {
                     b.HasOne("IntelliLoop.Core.Entities.Models.Lecture", "Lecture")
-                        .WithMany()
-                        .HasForeignKey("LectureId");
+                        .WithOne("ProcessingJob")
+                        .HasForeignKey("IntelliLoop.Core.Entities.ProcessingJob", "LectureId");
 
                     b.Navigation("Lecture");
                 });
@@ -415,6 +420,8 @@ namespace IntelliLoop.Web.Data.Migrations
             modelBuilder.Entity("IntelliLoop.Core.Entities.Models.Lecture", b =>
                 {
                     b.Navigation("Notes");
+
+                    b.Navigation("ProcessingJob");
                 });
 #pragma warning restore 612, 618
         }

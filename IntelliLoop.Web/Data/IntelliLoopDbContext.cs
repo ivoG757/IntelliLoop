@@ -12,5 +12,15 @@ namespace IntelliLoop.Web.Data
         public DbSet<Questions> Questions { get; set; }
         public DbSet<NoteSection> Notes { get; set; }
         public DbSet<ProcessingJob> ProcessingJobs { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ProcessingJob>()
+                .HasOne(job => job.Lecture)
+                .WithOne(lecture => lecture.ProcessingJob)
+                .HasForeignKey<ProcessingJob>(job => job.LectureId);
+        }
     }
 }
