@@ -23,7 +23,15 @@ namespace IntelliLoop.Web.Controllers
             //TODO: Implement the logic to display the generated lecture based on the job ID.
             var IdIsGuid = Guid.TryParse(id, out var jobId);
             var lecture = await _lectureGenerationService.GetLectureByJobIdAsync(jobId);
-            return View(lecture);
+
+            var lectureViewModel = new LectureViewModel
+            {
+                Title = lecture?.Title ?? "Lecture Not Found",
+                Summary = lecture?.Summary ?? "No summary available.",
+                Transcript = lecture?.Transcript ?? "No transcript available."
+            };
+
+            return View(lectureViewModel);
         }
 
         [HttpGet]
