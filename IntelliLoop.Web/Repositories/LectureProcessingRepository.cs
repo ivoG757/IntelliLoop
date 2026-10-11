@@ -26,7 +26,14 @@ namespace IntelliLoop.Web.Repositories
         public async Task<Lecture?> GetLectureByJobIdAsync(Guid jobId)
         {
             return await _context.Lectures
+                .Include(l => l.Notes)
                 .FirstOrDefaultAsync(l => l.ProcessingJob!.Id == jobId);
+        }
+        
+        public async Task<string> GetAudioFilePathByJobIdAsync(Guid jobId)
+        {
+            var job = await _context.ProcessingJobs.FirstOrDefaultAsync(j => j.Id == jobId);
+            return job?.FilePath ?? string.Empty;
         }
     }
 }

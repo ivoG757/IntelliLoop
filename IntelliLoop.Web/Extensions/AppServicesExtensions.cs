@@ -11,7 +11,7 @@ namespace IntelliLoop.Web.Extensions
         {
             services.AddScoped<IPromptService, PromptService>();
 
-            services.AddScoped<ILectureGenerationService, LectureGenerationService>();
+            services.AddScoped<ILectureService, LectureService>();
 
             services.AddScoped<LectureProcessingService>();
 

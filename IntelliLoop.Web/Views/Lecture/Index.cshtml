@@ -23,28 +23,13 @@
 
     @* Audio player *@
     <div class="audio-player">
-        <button class="play-btn" aria-label="Play lecture">
-            <i class="bi bi-play-fill"></i>
-        </button>
-
         <div class="player-info">
             <span class="player-label">Original lecture audio</span>
-
-            <div class="wave-row" aria-hidden="true">
-                <i class="wave-bar played h1"></i>
-                <i class="wave-bar played h3"></i>
-                <i class="wave-bar played h6"></i>
-                <i class="wave-bar played h2"></i>
-                <i class="wave-bar played h5"></i>
-                <i class="wave-bar played h1"></i>
-                <i class="wave-bar played h4"></i>
-                <i class="wave-bar played h2"></i>
-                <i class="wave-bar played h6"></i>
-                <i class="wave-bar played h3"></i>
-            </div>
+            <audio class="audio-controls" controls preload="metadata">
+                <source src="@Url.Action("Audio", "Lecture", new { id = Model.JobId })" type="audio/wav">
+                Your browser does not support audio playback.
+            </audio>
         </div>
-
-        <span class="player-time">00:00</span>
     </div>
 
     @* Summary *@

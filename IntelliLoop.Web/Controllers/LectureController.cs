@@ -1,7 +1,9 @@
 ﻿using IntelliLoop.Core.Entities;
 using IntelliLoop.Core.Entities.Enums;
+using IntelliLoop.Core.Entities.Models;
 using IntelliLoop.Core.Interfaces;
 using IntelliLoop.Web.Models;
+using IntelliLoop.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IntelliLoop.Web.Controllers
@@ -9,30 +11,48 @@ namespace IntelliLoop.Web.Controllers
 
     public class LectureController : Controller
     {
-        private readonly ILectureGenerationService _lectureGenerationService;
+        private readonly ILectureService _lectureService;
         private readonly ILogger<LectureController> _logger;
 
-        public LectureController(ILectureGenerationService lectureGenerationService, 
+        public LectureController(ILectureService lectureService, 
             ILogger<LectureController> logger)
         {
-            _lectureGenerationService = lectureGenerationService;
+            _lectureService = lectureService;
             _logger = logger;
         }
-        public async Task<IActionResult> Index([FromRoute] string id)
+        public async Task<IActionResult> Index(Guid id)
         {
-            //TODO: Implement the logic to display the generated lecture based on the job ID.
-            var IdIsGuid = Guid.TryParse(id, out var jobId);
-            var lecture = await _lectureGenerationService.GetLectureByJobIdAsync(jobId);
+            var lecture = await _lectureService.GetLectureByJobIdAsync(id);
 
             var lectureViewModel = new LectureViewModel
             {
                 Title = lecture?.Title ?? "Lecture Not Found",
                 Summary = lecture?.Summary ?? "No summary available.",
-                Transcript = lecture?.Transcript ?? "No transcript available."
+                KeyConcepts = lecture?.KeyConcepts ?? new List<string>(),
+                Notes = lecture?.Notes.Select(n => new NoteViewModel
+                {
+                    Title = n.Title,
+                    Content = n.Content
+                }).ToList() ?? new List<NoteViewModel>(),
+
+                Transcript = lecture?.Transcript ?? "No transcript available.",
+                JobId = id,
             };
 
             return View(lectureViewModel);
         }
+        public async Task<IActionResult> Audio(Guid id)
+        {
+            var audioFile = await _lectureService.GetAudioByJobIdAsync(id);
+            
+            if (audioFile == null)
+            {
+                return NotFound();
+            }
+
+            return File(audioFile, "audio/wav", enableRangeProcessing: true);
+        }
+
 
         [HttpGet]
         public IActionResult Upload()
@@ -53,7 +73,7 @@ namespace IntelliLoop.Web.Controllers
             }
 
 
-            Guid jobId = await _lectureGenerationService.QueueLectureGenerationAsync(file, userId);
+            Guid jobId = await _lectureService.QueueLectureGenerationAsync(file, userId);
 
             return RedirectToAction(nameof(Processing),
                 new
@@ -61,7 +81,7 @@ namespace IntelliLoop.Web.Controllers
                     Id = jobId
                 });
         }
-
+        
         [HttpGet]
         public async Task<IActionResult> Processing([FromRoute] string id)
         {
@@ -73,7 +93,7 @@ namespace IntelliLoop.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            ProcessingJob job = await _lectureGenerationService.GetLectureJobByIdAsync(jobId);
+            ProcessingJob job = await _lectureService.GetLectureJobByIdAsync(jobId);
 
             if (job == null)
             {
@@ -87,6 +107,13 @@ namespace IntelliLoop.Web.Controllers
                     Id = job.Id,
                     Status = job.Status,
                 });
+            }
+
+            if (job.LectureId == null)
+            {
+                _logger.LogError("Job {JobId} is completed but has no associated lecture.", job.Id);
+
+                return Problem("The lecture could not be found.");
             }
 
             return RedirectToAction(nameof(Index), new { id = job.Id });

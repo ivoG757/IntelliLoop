@@ -30,25 +30,19 @@ namespace IntelliLoop.Web.Services
                 new ChatMessage(ChatRole.User, extractionPrompts["user"][0] + $"{Environment.NewLine}{transcript}")
             };
 
-            ////var analyzedInfo = await _client.GetResponseAsync(extractionMessages);
+            var analyzedInfo = await _client.GetResponseAsync(extractionMessages);
 
-            //var formattingPrompts = _promptService.GetFormattingPrompts();
+            var formattingPrompts = _promptService.GetFormattingPrompts();
 
-            //var formattingMessages = new List<ChatMessage>
-            //{
-            //    new ChatMessage(ChatRole.System, formattingPrompts["system"][0]),
-            //    new ChatMessage(ChatRole.User, formattingPrompts["user"][0] + $"{Environment.NewLine}{analyzedInfo.Text}")
-            //};
-
-            //var structuredInfo = await _client.GetResponseAsync<LectureAnalysis>(formattingMessages);
-            var structuredInfo = new LectureAnalysis 
+            var formattingMessages = new List<ChatMessage>
             {
-                Title = "structuredInfo.Result.Title",
-                Summary = "structuredInfo.Result.Summary",
-                KeyConcepts = new(),
-                Notes = new()
+                new ChatMessage(ChatRole.System, formattingPrompts["system"][0]),
+                new ChatMessage(ChatRole.User, formattingPrompts["user"][0] + $"{Environment.NewLine}{analyzedInfo.Text}")
             };
-            return structuredInfo;
+
+            var structuredInfo = await _client.GetResponseAsync<LectureAnalysis>(formattingMessages);
+
+            return structuredInfo.Result;
         }
     }
 }

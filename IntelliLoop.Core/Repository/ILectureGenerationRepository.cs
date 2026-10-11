@@ -7,6 +7,7 @@ namespace IntelliLoop.Core.Repository
     {
         public Task<ProcessingJob?> GetJobByIdAsync(Guid jobId);
         public Task<Lecture?> GetLectureByJobIdAsync(Guid jobId);
+        public Task<string> GetAudioFilePathByJobIdAsync(Guid jobId);
         public Task AddJobAsync(ProcessingJob job);
     }
 }

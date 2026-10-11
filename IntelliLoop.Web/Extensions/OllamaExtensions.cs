@@ -21,7 +21,7 @@ namespace IntelliLoop.Web.Extensions
             // TODO: Move this to a configuration file or environment variable later
 
             services.AddChatClient(ollamaClient);
-            services.AddScoped<ILlmService, LocalLlmService>();
+            services.AddScoped<ILlmService, FakeLlmService>(); // TODO: Add the real LLM service implementation later
 
             return services;
         }

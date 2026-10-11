@@ -1,5 +1,4 @@
 ﻿using IntelliLoop.Core.DTOs;
-using IntelliLoop.Core.Entities;
 using IntelliLoop.Core.Entities.Enums;
 using IntelliLoop.Core.Entities.Models;
 using IntelliLoop.Core.Interfaces;
@@ -27,8 +26,8 @@ namespace IntelliLoop.Web.Services
             _transcriptionService = transcriptionService;
             _logger = logger;
             _lectureProcessingRepository = lectureProcessingRepository;
-            _uof = uof;
             _lectureRepository = lectureRepository;
+            _uof = uof;
         }
 
         public async Task ProcessLectureAsync(Guid jobId)

@@ -16,6 +16,5 @@ namespace IntelliLoop.Web.Repositories
         {
             await _context.Lectures.AddAsync(lecture);
         }
-
     }
 }

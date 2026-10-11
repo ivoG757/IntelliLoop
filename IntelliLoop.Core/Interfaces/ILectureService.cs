@@ -4,10 +4,11 @@ using IntelliLoop.Core.Entities.Models;
 using Microsoft.AspNetCore.Http;
 namespace IntelliLoop.Core.Interfaces
 {
-    public interface ILectureGenerationService
+    public interface ILectureService
     {
         public Task<Guid> QueueLectureGenerationAsync(IFormFile file, string userId);
         public Task<ProcessingJob> GetLectureJobByIdAsync(Guid jobId);
+        public Task<Stream?> GetAudioByJobIdAsync(Guid jobId);
         public Task<Lecture> GetLectureByJobIdAsync(Guid jobId);
     }
 }
