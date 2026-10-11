@@ -1,11 +1,8 @@
 ﻿using FFMpegCore;
-using FFMpegCore.Pipes;
 using IntelliLoop.Core.Interfaces;
-using Microsoft.AspNetCore.Components.Forms;
-using System.Diagnostics;
 using System.Text;
 using Whisper.net;
-using Whisper.net.Ggml;
+using static IntelliLoop.Web.Common.Constants.AudioConstants;
 
 namespace IntelliLoop.Web.Services
 {
@@ -43,15 +40,15 @@ namespace IntelliLoop.Web.Services
             }
 
             await FFMpegArguments.FromFileInput(audioFilePath)
-                .OutputToFile(audioFilePath + 1, overwrite: true,
+                .OutputToFile(audioFilePath + TempFileSuffix, overwrite: true,
                 options => options
-                .WithAudioSamplingRate(16000)
-                .WithCustomArgument("-ac 1")
-                .WithAudioCodec("pcm_s16le")
-                .ForceFormat("wav")
+                .WithAudioSamplingRate(WhisperSampleRate)
+                .WithCustomArgument(MonoAudioArgument)
+                .WithAudioCodec(PcmAudioCodec)
+                .ForceFormat(WavExtension)
                 ).ProcessAsynchronously();
 
-            using var fileStream = File.OpenRead(audioFilePath + 1);
+            using var fileStream = File.OpenRead(audioFilePath + TempFileSuffix);
 
             var transcript = new StringBuilder();
 

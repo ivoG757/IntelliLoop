@@ -1,4 +1,4 @@
-﻿using IntelliLoop.Web.Common;
+﻿using IntelliLoop.Web.Common.Constants;
 using IntelliLoop.Web.Data;
 using IntelliLoop.Web.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -14,7 +14,7 @@ namespace IntelliLoop.Web.Extensions
             services.AddIdentity<User, IdentityRole>(options =>
             {
                 options.User.RequireUniqueEmail = true;
-                options.Password.RequiredLength = Constants.Account.MinimumPasswordLength;
+                options.Password.RequiredLength = AccountConstants.MinimumPasswordLength;
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
                 options.Password.RequireUppercase = true;

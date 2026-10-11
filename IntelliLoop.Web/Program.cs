@@ -32,7 +32,7 @@ builder.Services.AddSingleton(_ =>
     return channel;
 });
 
-builder.Services.AddOllama();
+builder.Services.AddOllama(builder.Configuration);
 
 var app = builder.Build();
 

@@ -6,7 +6,7 @@ namespace IntelliLoop.Web.Extensions
 {
     public static class OllamaExtensions
     {
-        public static IServiceCollection AddOllama(this IServiceCollection services)
+        public static IServiceCollection AddOllama(this IServiceCollection services, IConfiguration configuration)
         {
             var httpClient = new HttpClient
             {
@@ -16,12 +16,11 @@ namespace IntelliLoop.Web.Extensions
 
             var ollamaClient = new OllamaApiClient(httpClient)
             {
-                SelectedModel = "qwen3:8b"
+                SelectedModel = configuration["Ollama:Model"] ?? throw new InvalidOperationException("Ollama model is not configured.")
             };
-            // TODO: Move this to a configuration file or environment variable later
 
             services.AddChatClient(ollamaClient);
-            services.AddScoped<ILlmService, FakeLlmService>(); // TODO: Add the real LLM service implementation later
+            services.AddScoped<ILlmService, FakeLlmService>(); //REMINDER: Add the real LLM service implementation later
 
             return services;
         }

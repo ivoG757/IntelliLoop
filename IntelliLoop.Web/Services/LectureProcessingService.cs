@@ -6,7 +6,7 @@ using IntelliLoop.Core.Repository;
 
 namespace IntelliLoop.Web.Services
 {
-    public class LectureProcessingService //TODO: Add an interface 
+    public class LectureProcessingService : ILectureProcessingService
     {
         private readonly ILlmService _llmService;
         private readonly ITranscriptionService _transcriptionService;
