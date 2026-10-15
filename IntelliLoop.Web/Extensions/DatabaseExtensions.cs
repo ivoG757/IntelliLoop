@@ -1,4 +1,4 @@
-﻿using IntelliLoop.Web.Data;
+﻿using IntelliLoop.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace IntelliLoop.Web.Extensions

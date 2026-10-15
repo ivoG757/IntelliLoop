@@ -1,6 +1,4 @@
-﻿using IntelliLoop.Core.Entities.Models;
-
-namespace IntelliLoop.Web.Models
+﻿namespace IntelliLoop.Web.Models
 {
     public class LectureViewModel
     {

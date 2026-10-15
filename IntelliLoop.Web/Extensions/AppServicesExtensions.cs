@@ -1,9 +1,11 @@
-﻿using IntelliLoop.Core.Interfaces;
-using IntelliLoop.Core.Repository;
-using IntelliLoop.Web.Repositories;
+﻿using IntelliLoop.Core.Contracts.Repositories;
+using IntelliLoop.Core.Contracts.Services;
+using IntelliLoop.Core.Services;
+using IntelliLoop.Infrastructure.Data.Repositories;
+using IntelliLoop.Infrastructure.Services;
 using IntelliLoop.Web.Services;
 
-namespace IntelliLoop.Web.Extensions
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ApplicationServicesExtension
     {
@@ -23,9 +25,11 @@ namespace IntelliLoop.Web.Extensions
 
             services.AddScoped<IFileStorage, FileStorage>();
 
-            services.AddSingleton<ITranscriptionService, TranscriptionService>();
+            services.AddScoped<ITranscriptionService, TranscriptionService>();
 
             services.AddHostedService<LectureWorker>();
+
+            services.AddSingleton<IWhisperModelService, WhisperModelService>();
 
             return services;
         }

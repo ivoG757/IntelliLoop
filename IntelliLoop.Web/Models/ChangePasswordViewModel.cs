@@ -1,6 +1,5 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using static IntelliLoop.Web.Common.Constants.AccountConstants;
+﻿using System.ComponentModel.DataAnnotations;
+using static IntelliLoop.Common.Constants.AccountConstants;
 namespace IntelliLoop.Web.Models
 {
     public class ChangePasswordViewModel

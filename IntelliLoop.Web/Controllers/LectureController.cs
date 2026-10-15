@@ -1,14 +1,11 @@
-﻿using IntelliLoop.Core.Entities;
+﻿using IntelliLoop.Core.Contracts.Services;
 using IntelliLoop.Core.Entities.Enums;
 using IntelliLoop.Core.Entities.Models;
-using IntelliLoop.Core.Interfaces;
 using IntelliLoop.Web.Models;
-using IntelliLoop.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IntelliLoop.Web.Controllers
 {
-
     public class LectureController : Controller
     {
         private readonly ILectureService _lectureService;
@@ -68,12 +65,11 @@ namespace IntelliLoop.Web.Controllers
 
             if (file == null || file.Length == 0)
             {
-                ModelState.AddModelError("audioFile", "Please select an audio file.");
+                ModelState.AddModelError("file", "Please select an audio file.");
                 return View();
             }
 
-
-            Guid jobId = await _lectureService.QueueLectureGenerationAsync(file, userId);
+            Guid jobId = await _lectureService.QueueLectureGenerationAsync(file.OpenReadStream(), file.FileName, userId);
 
             return RedirectToAction(nameof(Processing),
                 new

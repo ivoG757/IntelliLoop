@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using static IntelliLoop.Web.Common.Constants.AccountConstants;
+using static IntelliLoop.Common.Constants.AccountConstants;
 namespace IntelliLoop.Web.Models
 {
     public class RegisterViewModel

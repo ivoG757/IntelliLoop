@@ -1,5 +1,7 @@
 <Solution>
-  <Project Path="IntelliLoop.Core/IntelliLoop.Core.csproj" />
-  <Project Path="IntelliLoop.Tests/IntelliLoop.Tests.csproj" />
-  <Project Path="IntelliLoop.Web/IntelliLoop.Web.csproj" Id="fb4c5d85-d70f-44cc-8195-bb9f19c1b826" />
+  <Project Path="D:/projects/IntelliLoop/IntelliLoop.Common/IntelliLoop.Common.csproj" Id="c2b24356-efa3-480d-95b1-40abeb342c44" />
+  <Project Path="D:/projects/IntelliLoop/IntelliLoop.Core/IntelliLoop.Core.csproj" />
+  <Project Path="D:/projects/IntelliLoop/IntelliLoop.Infrastructure/IntelliLoop.Infrastructure.csproj" Id="74fe9fcc-77c9-4117-8841-46b234665629" />
+  <Project Path="D:/projects/IntelliLoop/IntelliLoop.Tests/IntelliLoop.Tests.csproj" />
+  <Project Path="D:/projects/IntelliLoop/IntelliLoop.Web/IntelliLoop.Web.csproj" Id="fb4c5d85-d70f-44cc-8195-bb9f19c1b826" />
 </Solution>

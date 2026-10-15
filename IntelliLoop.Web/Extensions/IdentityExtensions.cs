@@ -1,8 +1,7 @@
-﻿using IntelliLoop.Web.Common.Constants;
-using IntelliLoop.Web.Data;
-using IntelliLoop.Web.Identity;
+﻿using IntelliLoop.Common.Constants;
+using IntelliLoop.Infrastructure.Data;
+using IntelliLoop.Infrastructure.Data.Identity;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace IntelliLoop.Web.Extensions
 {

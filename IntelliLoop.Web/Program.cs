@@ -1,6 +1,7 @@
+using IntelliLoop.Core.Contracts.Services;
+using IntelliLoop.Web.Extensions;
 using System.Text;
 using System.Threading.Channels;
-using IntelliLoop.Web.Extensions;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,9 +19,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddRazorPages(); 
 
-builder.Services.AddApplicationServices();
 
-await builder.Services.ConfigureWhisperAsync(builder.Configuration);
+builder.Services.AddApplicationServices();
 
 builder.Services.AddSingleton(_ =>
 {
@@ -65,4 +65,12 @@ app.MapControllerRoute(
 app.MapRazorPages()
    .WithStaticAssets();
 
-app.Run();
+using (var scope = app.Services.CreateScope())
+{
+    var modelService = scope.ServiceProvider
+        .GetRequiredService<IWhisperModelService>();
+
+    await modelService.EnsureModelExistsAsync();
+}
+
+await app.RunAsync();

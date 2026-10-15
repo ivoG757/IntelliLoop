@@ -11,16 +11,6 @@
     padding: 24px 10px 15px;
 }
 
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 2px 13px 31px;
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--foreground);
-}
-
 .brand-mark {
     width: 26px;
     height: 26px;
@@ -120,8 +110,10 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    border-top: 1px solid var(--border);
-    padding: 17px 12px 1px;
+    border-top: none;
+    border-bottom: 1px solid var(--border);
+    padding: 0 12px 17px;
+    margin-bottom: 20px;
     font-size: 12px;
     color: var(--muted-foreground);
 }

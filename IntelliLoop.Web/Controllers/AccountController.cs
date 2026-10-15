@@ -1,5 +1,4 @@
-﻿using IntelliLoop.Web.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace IntelliLoop.Web.Controllers
 {

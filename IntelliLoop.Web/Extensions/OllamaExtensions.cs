@@ -1,5 +1,5 @@
-﻿using IntelliLoop.Core.Interfaces;
-using IntelliLoop.Web.Services;
+﻿using IntelliLoop.Core.Contracts.Services;
+using IntelliLoop.Core.Services;
 using OllamaSharp;
 
 namespace IntelliLoop.Web.Extensions
@@ -10,7 +10,7 @@ namespace IntelliLoop.Web.Extensions
         {
             var httpClient = new HttpClient
             {
-                BaseAddress = new Uri("http://localhost:11434"),
+                BaseAddress = new Uri(configuration["Ollama:BaseUrl"] ?? throw new InvalidOperationException("Ollama base URL is not configured.")),
                 Timeout = TimeSpan.FromMinutes(10)
             };
 
