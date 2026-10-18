@@ -16,22 +16,24 @@ namespace IntelliLoop.Infrastructure.Data.Repositories
             await _context.ProcessingJobs.AddAsync(job);
         }
 
+        public async Task<ProcessingJob?> GetJobByIdAsync(Guid jobId, Guid userId)
+        {
+            return await _context.ProcessingJobs
+                .AsNoTracking()
+                .FirstOrDefaultAsync(j => j.Id == jobId && j.UserId == userId.ToString());
+        }
         public async Task<ProcessingJob?> GetJobByIdAsync(Guid jobId)
         {
-            return await _context.ProcessingJobs.FindAsync(jobId);
+            return await _context.ProcessingJobs
+                .FirstOrDefaultAsync(j => j.Id == jobId);
         }
 
-        public async Task<Lecture?> GetLectureByJobIdAsync(Guid jobId)
+        public async Task<Lecture?> GetLectureByJobIdAsync(Guid jobId, Guid userId)
         {
             return await _context.Lectures
+                .AsNoTracking()
                 .Include(l => l.Notes)
-                .FirstOrDefaultAsync(l => l.ProcessingJob!.Id == jobId);
-        }
-        
-        public async Task<string> GetAudioFilePathByJobIdAsync(Guid jobId)
-        {
-            var job = await _context.ProcessingJobs.FirstOrDefaultAsync(j => j.Id == jobId);
-            return job?.FilePath ?? string.Empty;
+                .FirstOrDefaultAsync(l => l.ProcessingJob!.Id == jobId && l.UserId == userId.ToString());
         }
     }
 }

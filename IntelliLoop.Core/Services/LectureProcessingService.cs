@@ -1,10 +1,10 @@
-﻿using IntelliLoop.Core.Contracts.Repositories;
+﻿using IntelliLoop.Common.Constants;
+using IntelliLoop.Core.Contracts.Repositories;
 using IntelliLoop.Core.Contracts.Services;
 using IntelliLoop.Core.DTOs;
 using IntelliLoop.Core.Entities.Enums;
 using IntelliLoop.Core.Entities.Models;
 using Microsoft.Extensions.Logging;
-using System.Text.Json.Serialization;
 
 namespace IntelliLoop.Core.Services
 {
@@ -71,7 +71,8 @@ namespace IntelliLoop.Core.Services
                 KeyConcepts = summary.KeyConcepts,
                 Notes = summary.Notes,
                 Transcript = transcript,
-                ProcessingJob = job
+                ProcessingJob = job,
+                UserId = job.UserId
             };
 
             await _lectureRepository.AddLectureAsync(lecture);
@@ -98,6 +99,51 @@ namespace IntelliLoop.Core.Services
 
             _logger.LogInformation($"Completed lecture generation job with ID: {jobId}");
 
+        }
+
+        //TODO: validate the uploaded audio file before saving it to the storage.
+        private static void ValidateAudioUpload(Stream file, string fileName)
+        {
+            ArgumentNullException.ThrowIfNull(file);
+
+            if (!file.CanRead)
+            {
+                throw new ArgumentException(
+                    "The uploaded file cannot be read.", nameof(file));
+            }
+
+            if (string.IsNullOrWhiteSpace(fileName))
+            {
+                throw new ArgumentException(
+                    "A file name is required.", nameof(fileName));
+            }
+
+            var extension = Path.GetExtension(fileName);
+
+            if (!AudioConstants.AllowedAudioExtensions.Contains(extension))
+            {
+                throw new InvalidDataException(
+                    "Unsupported file type. Upload an MP3, WAV, M4A, OGG, or WebM file.");
+            }
+
+            if (!file.CanSeek)
+            {
+                throw new InvalidOperationException(
+                    "The upload stream must support seeking to validate its size.");
+            }
+
+            if (file.Length == 0)
+            {
+                throw new InvalidDataException("The uploaded file is empty.");
+            }
+
+            if (file.Length > AudioConstants.MaxAudioFileSizeBytes)
+            {
+                throw new InvalidDataException(
+                    "The audio file cannot exceed 100 MB.");
+            }
+
+            file.Position = 0;
         }
     }
 }

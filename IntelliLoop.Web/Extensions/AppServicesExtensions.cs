@@ -3,7 +3,6 @@ using IntelliLoop.Core.Contracts.Services;
 using IntelliLoop.Core.Services;
 using IntelliLoop.Infrastructure.Data.Repositories;
 using IntelliLoop.Infrastructure.Services;
-using IntelliLoop.Web.Services;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -15,7 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddScoped<ILectureService, LectureService>();
 
-            services.AddScoped<LectureProcessingService>();
+            services.AddScoped<ILectureProcessingService, LectureProcessingService>();
 
             services.AddScoped<ILectureProcessingRepository, LectureProcessingRepository>();
 

@@ -15,6 +15,9 @@ namespace IntelliLoop.Core.Entities.Models
         public DateTime StartedAt { get; set; }
         public DateTime? CompletedAt { get; set; }
 
+        [Required]
+        public string UserId { get; set; } = null!;
+
         [ForeignKey(nameof(Lecture))]
         public Guid? LectureId { get; set; }
         public Lecture? Lecture { get; set; }

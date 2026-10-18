@@ -37,11 +37,11 @@ namespace IntelliLoop.Infrastructure.Services
             return stream;
         }
 
-        public async Task<string> SaveAsync(Stream file, string fileName, string userId)
+        public async Task<string> SaveAsync(Stream file, string fileName, Guid userId)
         {
 
             var userFolder = Path.Combine(
-            _path, userId);
+            _path, userId.ToString());
 
             Directory.CreateDirectory(userFolder);
 

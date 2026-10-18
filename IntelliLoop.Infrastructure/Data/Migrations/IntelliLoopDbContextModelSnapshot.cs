@@ -44,7 +44,13 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Lectures");
                 });
@@ -101,11 +107,17 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("LectureId")
                         .IsUnique()
                         .HasFilter("[LectureId] IS NOT NULL");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("ProcessingJobs");
                 });
@@ -149,9 +161,6 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<Guid?>("LectureId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -186,8 +195,6 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LectureId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -333,6 +340,15 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("IntelliLoop.Core.Entities.Models.Lecture", b =>
+                {
+                    b.HasOne("IntelliLoop.Infrastructure.Data.Identity.User", null)
+                        .WithMany("Lecture")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("IntelliLoop.Core.Entities.Models.NoteSection", b =>
                 {
                     b.HasOne("IntelliLoop.Core.Entities.Models.Lecture", "lecture")
@@ -350,6 +366,12 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
                         .WithOne("ProcessingJob")
                         .HasForeignKey("IntelliLoop.Core.Entities.Models.ProcessingJob", "LectureId");
 
+                    b.HasOne("IntelliLoop.Infrastructure.Data.Identity.User", null)
+                        .WithMany("ProcessingJobs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Lecture");
                 });
 
@@ -362,15 +384,6 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("lecture");
-                });
-
-            modelBuilder.Entity("IntelliLoop.Infrastructure.Data.Identity.User", b =>
-                {
-                    b.HasOne("IntelliLoop.Core.Entities.Models.Lecture", "Lecture")
-                        .WithMany()
-                        .HasForeignKey("LectureId");
-
-                    b.Navigation("Lecture");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -428,7 +441,15 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
                 {
                     b.Navigation("Notes");
 
-                    b.Navigation("ProcessingJob");
+                    b.Navigation("ProcessingJob")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("IntelliLoop.Infrastructure.Data.Identity.User", b =>
+                {
+                    b.Navigation("Lecture");
+
+                    b.Navigation("ProcessingJobs");
                 });
 #pragma warning restore 612, 618
         }

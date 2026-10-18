@@ -20,6 +20,18 @@ namespace IntelliLoop.Infrastructure.Data
                 .HasOne(job => job.Lecture)
                 .WithOne(lecture => lecture.ProcessingJob)
                 .HasForeignKey<ProcessingJob>(job => job.LectureId);
+
+            modelBuilder.Entity<Lecture>()
+                .HasOne<User>()
+                .WithMany(u => u.Lecture)
+                .HasForeignKey(l => l.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ProcessingJob>()
+                .HasOne<User>()
+                .WithMany(u => u.ProcessingJobs)
+                .HasForeignKey(j => j.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

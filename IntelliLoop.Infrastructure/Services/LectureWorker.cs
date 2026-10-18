@@ -1,7 +1,10 @@
-﻿using IntelliLoop.Core.Services;
+﻿using IntelliLoop.Core.Contracts.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System.Threading.Channels;
 
-namespace IntelliLoop.Web.Services
+namespace IntelliLoop.Infrastructure.Services
 {
     public class LectureWorker : BackgroundService
     {
@@ -30,7 +33,7 @@ namespace IntelliLoop.Web.Services
                     try
                     {
                         using var scope = _scopeFactory.CreateScope();
-                        var lectureProcessingService = scope.ServiceProvider.GetRequiredService<LectureProcessingService>();
+                        var lectureProcessingService = scope.ServiceProvider.GetRequiredService<ILectureProcessingService>();
                         await lectureProcessingService.ProcessLectureAsync(jobId);
                     }
                     catch (OperationCanceledException)

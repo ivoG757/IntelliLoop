@@ -29,21 +29,41 @@ namespace IntelliLoop.Core.Services
 
         }
 
-        public async Task<Guid> QueueLectureGenerationAsync(Stream file, string fileName, string userId)
-        {
-            //TODO: put validation for file type and size here
-            //TODO: put saving into try catch block and log errors
 
-            var filePath = await _fileStorage.SaveAsync(file, fileName, userId);
+        public async Task<Guid> QueueLectureGenerationAsync(Stream file, string fileName, Guid userId)
+        {
+            var filePath = string.Empty;
+
+            try
+            {
+                filePath = await _fileStorage.SaveAsync(file, fileName, userId);
+
+            }
+            catch
+            {
+                _logger.LogError("Failed to save the uploaded file for user {UserId}.", userId);
+                throw;
+            }
 
             ProcessingJob job = new ProcessingJob
             {
                 FilePath = filePath,
                 Status = LectureGenerationStatus.Queued,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                UserId = userId.ToString()
             };
 
-            await _lectureProcessingRepository.AddJobAsync(job);
+            try
+            {
+                await _lectureProcessingRepository.AddJobAsync(job);
+            }
+            catch
+            {
+                await _fileStorage.Delete(filePath);
+
+                _logger.LogError("Failed to add the processing job for user {UserId}.", userId);
+                throw;
+            }
 
             await _uof.SaveChangesAsync();
 
@@ -52,26 +72,26 @@ namespace IntelliLoop.Core.Services
             return job.Id;
         }
 
-        public async Task<Stream?> GetAudioByJobIdAsync(Guid jobId)
+        public async Task<Stream?> GetAudioByJobIdAsync(Guid jobId, Guid userId)
         {
-            var job = await _lectureProcessingRepository.GetJobByIdAsync(jobId);
+            var job = await _lectureProcessingRepository.GetJobByIdAsync(jobId, userId);
 
             if (job == null)
             {
-                _logger.LogWarning($"Lecture generation job with ID: {jobId} not found.");
+                _logger.LogWarning("Lecture generation job with ID: {jobId} not found.", jobId);
                 return null;
             }
 
             if (job.Status != LectureGenerationStatus.Completed)
             {
-                _logger.LogWarning($"Lecture generation job with ID: {jobId} is not completed yet.");
+                _logger.LogWarning("Lecture generation job with ID: {jobId} is not completed yet.", jobId);
 
                 return null;
             }
 
-            var path = await _lectureProcessingRepository.GetAudioFilePathByJobIdAsync(job.Id);
+            var path = job.FilePath;
 
-            if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+            if (string.IsNullOrWhiteSpace(path) || !_fileStorage.Exists(path))
             {
                 _logger.LogWarning("Audio file for job {JobId} was not found.", jobId);
                 return null;
@@ -82,20 +102,22 @@ namespace IntelliLoop.Core.Services
             return audioStream;
         }
 
-        public async Task<ProcessingJob?> GetLectureJobByIdAsync(Guid jobId)
+        public async Task<ProcessingJob?> GetLectureJobByIdAsync(Guid jobId, Guid userId)
         {
-            var job = await _lectureProcessingRepository.GetJobByIdAsync(jobId);
+            var job = await _lectureProcessingRepository.GetJobByIdAsync(jobId, userId);
+
             if (job == null)
             {
-                _logger.LogWarning($"Lecture generation job with ID: {jobId} not found.");
+                _logger.LogWarning("Lecture generation job with ID: {JobId} not found.", jobId);
                 return null;
             }
+
             return job;
         }
 
-        public async Task<Lecture?> GetLectureByJobIdAsync(Guid jobId)
+        public async Task<Lecture?> GetLectureByJobIdAsync(Guid jobId, Guid userId)
         {
-            var lecture = await _lectureProcessingRepository.GetLectureByJobIdAsync(jobId);
+            var lecture = await _lectureProcessingRepository.GetLectureByJobIdAsync(jobId, userId);
 
             return lecture;
         }

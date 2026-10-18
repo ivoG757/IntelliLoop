@@ -2,16 +2,19 @@
 using IntelliLoop.Core.Entities.Enums;
 using IntelliLoop.Core.Entities.Models;
 using IntelliLoop.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace IntelliLoop.Web.Controllers
 {
+    [Authorize]
     public class LectureController : Controller
     {
         private readonly ILectureService _lectureService;
         private readonly ILogger<LectureController> _logger;
 
-        public LectureController(ILectureService lectureService, 
+        public LectureController(ILectureService lectureService,
             ILogger<LectureController> logger)
         {
             _lectureService = lectureService;
@@ -19,7 +22,9 @@ namespace IntelliLoop.Web.Controllers
         }
         public async Task<IActionResult> Index(Guid id)
         {
-            var lecture = await _lectureService.GetLectureByJobIdAsync(id);
+            var userId = GetUserId();
+
+            var lecture = await _lectureService.GetLectureByJobIdAsync(id, userId);
 
             var lectureViewModel = new LectureViewModel
             {
@@ -40,8 +45,9 @@ namespace IntelliLoop.Web.Controllers
         }
         public async Task<IActionResult> Audio(Guid id)
         {
-            var audioFile = await _lectureService.GetAudioByJobIdAsync(id);
-            
+            var userId = GetUserId();
+            var audioFile = await _lectureService.GetAudioByJobIdAsync(id, userId);
+
             if (audioFile == null)
             {
                 return NotFound();
@@ -60,8 +66,7 @@ namespace IntelliLoop.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Upload(IFormFile file)
         {
-            //string userId = User.Identity!.Name!;
-            string userId = Guid.NewGuid().ToString();
+            var userId = GetUserId();
 
             if (file == null || file.Length == 0)
             {
@@ -77,10 +82,11 @@ namespace IntelliLoop.Web.Controllers
                     Id = jobId
                 });
         }
-        
+
         [HttpGet]
         public async Task<IActionResult> Processing([FromRoute] string id)
         {
+            var userId = GetUserId();
 
             var IdIsGuid = Guid.TryParse(id, out var jobId);
 
@@ -89,7 +95,7 @@ namespace IntelliLoop.Web.Controllers
                 return BadRequest(ModelState);
             }
 
-            ProcessingJob job = await _lectureService.GetLectureJobByIdAsync(jobId);
+            ProcessingJob? job = await _lectureService.GetLectureJobByIdAsync(jobId, userId);
 
             if (job == null)
             {
@@ -113,6 +119,18 @@ namespace IntelliLoop.Web.Controllers
             }
 
             return RedirectToAction(nameof(Index), new { id = job.Id });
+        }
+
+        private Guid GetUserId()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!Guid.TryParse(userId, out var id))
+            {
+                throw new InvalidOperationException("The authenticated user's ID is not a valid GUID.");
+            }
+
+            return id;
         }
     }
 }
