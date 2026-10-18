@@ -1,5 +1,6 @@
-﻿using IntelliLoop.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using IntelliLoop.Common.ExceptionMessages;
+using IntelliLoop.Infrastructure.Data;
 
 namespace IntelliLoop.Web.Extensions
 {
@@ -10,7 +11,7 @@ namespace IntelliLoop.Web.Extensions
             IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection")
-                ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+                ?? throw new InvalidOperationException(Configuration.ConnectionStringNotFound);
 
             services.AddDbContext<IntelliLoopDbContext>(options =>
                 options.UseSqlServer(connectionString));

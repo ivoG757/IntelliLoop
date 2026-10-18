@@ -9,16 +9,16 @@ var builder = WebApplication.CreateBuilder(args);
 Console.OutputEncoding = Encoding.UTF8;
 
 builder.Logging.ClearProviders();
+
 builder.Logging.AddConsole();
 
 builder.Services.AddDatabase(builder.Configuration);
 
-builder.Services.AddIdentityOptions();
+builder.Services.AddIdentityOptions(builder.Configuration);
 
 builder.Services.AddControllersWithViews(); 
 
 builder.Services.AddRazorPages(); 
-
 
 builder.Services.AddApplicationServices();
 

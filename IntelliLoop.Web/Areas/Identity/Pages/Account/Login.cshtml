@@ -1,0 +1,53 @@
+@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<div class="account-container">
+    <div class="account-box">
+        <h2 class="text-center mb-4">Login</h2>
+
+        <form id="loginForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Email" class="form-label"></label>
+                <input asp-for="Input.Email" class="form-control" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Password" class="form-label"></label>
+                <input asp-for="Input.Password" class="form-control" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+
+            @* <div class="float-end">
+                <a href="#" class="text-decoration-none"
+                   onclick="alert('Password recovery is not available yet.'); return false;">
+                    Forgot password?
+                </a>
+            </div>  maybe someday...*@
+
+            <div class="form-check mb-3">
+                <div class="form-check-label">
+                    <input asp-for="Input.RememberMe" class="form-check-input" />
+                    <label asp-for="Input.RememberMe" class="form-check-label"></label>
+                </div>
+            </div>
+            <input type="submit" value="Login" class="btn btn-success w-100 p-2 mb-0" />
+            <div class="text-center">
+                <p class="text-center mt-2">
+                    Don't have an account? <a asp-area="Identity" asp-page="/Account/Register" class="text-decoration-none">Register</a>
+                </p>
+                <a asp-controller="Home" asp-action="Index" class="text-decoration-none mt-3">Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

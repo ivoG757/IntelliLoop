@@ -17,7 +17,8 @@ namespace IntelliLoop.Core.Services
         public LectureService(Channel<Guid> jobChannel,
             ILectureProcessingRepository lectureGenerationRepository,
             ILogger<LectureService> logger,
-            IFileStorage fileStorage, ILectureRepository lectureRepository,
+            IFileStorage fileStorage, 
+            ILectureRepository lectureRepository,
             IUnitOfWork uof)
         {
             _jobChannel = jobChannel;

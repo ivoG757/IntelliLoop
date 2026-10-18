@@ -17,7 +17,7 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.8")
+                .HasAnnotation("ProductVersion", "10.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -31,9 +31,6 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
                     b.PrimitiveCollection<string>("KeyConcepts")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("ProcessingJobId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Summary")
                         .IsRequired()
@@ -76,27 +73,7 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
                     b.ToTable("Notes");
                 });
 
-            modelBuilder.Entity("IntelliLoop.Core.Entities.Models.Questions", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("LectureId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.PrimitiveCollection<string>("QuestionsList")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LectureId");
-
-                    b.ToTable("Questions");
-                });
-
-            modelBuilder.Entity("IntelliLoop.Core.Entities.ProcessingJob", b =>
+            modelBuilder.Entity("IntelliLoop.Core.Entities.Models.ProcessingJob", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -118,7 +95,7 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
                     b.Property<Guid?>("LectureId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("StartedAt")
+                    b.Property<DateTime>("StartedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Status")
@@ -133,7 +110,27 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
                     b.ToTable("ProcessingJobs");
                 });
 
-            modelBuilder.Entity("IntelliLoop.Web.Identity.User", b =>
+            modelBuilder.Entity("IntelliLoop.Core.Entities.Models.Questions", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("LectureId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.PrimitiveCollection<string>("QuestionsList")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LectureId");
+
+                    b.ToTable("Questions");
+                });
+
+            modelBuilder.Entity("IntelliLoop.Infrastructure.Data.Identity.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -152,9 +149,8 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid?>("LectureId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -190,6 +186,8 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LectureId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -346,6 +344,15 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
                     b.Navigation("lecture");
                 });
 
+            modelBuilder.Entity("IntelliLoop.Core.Entities.Models.ProcessingJob", b =>
+                {
+                    b.HasOne("IntelliLoop.Core.Entities.Models.Lecture", "Lecture")
+                        .WithOne("ProcessingJob")
+                        .HasForeignKey("IntelliLoop.Core.Entities.Models.ProcessingJob", "LectureId");
+
+                    b.Navigation("Lecture");
+                });
+
             modelBuilder.Entity("IntelliLoop.Core.Entities.Models.Questions", b =>
                 {
                     b.HasOne("IntelliLoop.Core.Entities.Models.Lecture", "lecture")
@@ -357,11 +364,11 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
                     b.Navigation("lecture");
                 });
 
-            modelBuilder.Entity("IntelliLoop.Core.Entities.ProcessingJob", b =>
+            modelBuilder.Entity("IntelliLoop.Infrastructure.Data.Identity.User", b =>
                 {
                     b.HasOne("IntelliLoop.Core.Entities.Models.Lecture", "Lecture")
-                        .WithOne("ProcessingJob")
-                        .HasForeignKey("IntelliLoop.Core.Entities.ProcessingJob", "LectureId");
+                        .WithMany()
+                        .HasForeignKey("LectureId");
 
                     b.Navigation("Lecture");
                 });
@@ -377,7 +384,7 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("IntelliLoop.Web.Identity.User", null)
+                    b.HasOne("IntelliLoop.Infrastructure.Data.Identity.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -386,7 +393,7 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("IntelliLoop.Web.Identity.User", null)
+                    b.HasOne("IntelliLoop.Infrastructure.Data.Identity.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -401,7 +408,7 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("IntelliLoop.Web.Identity.User", null)
+                    b.HasOne("IntelliLoop.Infrastructure.Data.Identity.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -410,7 +417,7 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("IntelliLoop.Web.Identity.User", null)
+                    b.HasOne("IntelliLoop.Infrastructure.Data.Identity.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

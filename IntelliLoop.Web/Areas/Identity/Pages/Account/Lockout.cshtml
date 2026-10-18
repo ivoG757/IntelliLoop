@@ -1,0 +1,25 @@
+@page
+@model LockoutModel
+@{
+    ViewData["Title"] = "Account locked";
+}
+
+<div class="account-container">
+    <div class="account-box lockout-box">
+        <h2 class="text-center mb-3">Account locked</h2>
+
+        <p class="lockout-message">
+            Too many failed login attempts. Please wait until the lockout period ends before trying again.
+        </p>
+
+        <a asp-area="Identity" asp-page="/Account/Login"
+           class="btn btn-success w-100 p-2">
+            Back to login
+        </a>
+
+        <div class="text-center mt-3">
+            <a asp-controller="Home" asp-action="Index"
+               class="text-decoration-none">Back</a>
+        </div>
+    </div>
+</div>

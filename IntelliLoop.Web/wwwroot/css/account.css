@@ -1,4 +1,5 @@
 ﻿.account-container {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     background-color: #f6f8fa;
     display: flex;
     justify-content: center;
@@ -16,7 +17,6 @@
     box-shadow: 0 8px 24px rgba(140, 149, 159, 0.2);
     max-width: 500px;
     width: 100%;
-    opacity: 0.9;
 }
 
 .form-control {
@@ -32,6 +32,22 @@
 .field-validation-valid {
     display: block;
     min-height: 24px;
+}
+
+.lockout-box {
+    max-width: 420px;
+}
+
+.lockout-message {
+    color: #664d03;
+    background-color: #fff8e1;
+    border: 1px solid #f1dfaa;
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin: 0 0 24px;
+    text-align: center;
+    line-height: 1.5;
+    font-size: 0.95rem;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -55,5 +71,11 @@
         background-color: #0d1117;
         color: #f0f6fc;
 
+    }
+
+    .lockout-message {
+        color: #f0d98c;
+        background-color: #302709;
+        border-color: #65501b;
     }
 }
