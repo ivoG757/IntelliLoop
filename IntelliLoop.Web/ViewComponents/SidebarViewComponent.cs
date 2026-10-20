@@ -1,5 +1,5 @@
 ﻿using IntelliLoop.Core.Contracts.Services;
-using IntelliLoop.Core.Entities.Enums;
+using IntelliLoop.Web.Mapping;
 using IntelliLoop.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -37,7 +37,7 @@ public class SidebarViewComponent : ViewComponent
         {
             JobId = dto.JobId,
             Title = string.IsNullOrWhiteSpace(dto.Title)
-            ? "Processing"
+            ? StatusManager.Map(dto.Status)
             : dto.Title,
             Status = dto.Status
         }).ToList();
@@ -45,7 +45,7 @@ public class SidebarViewComponent : ViewComponent
         SidebarViewModel model = new SidebarViewModel
         {
             UserEmail = UserClaimsPrincipal
-            .FindFirstValue(ClaimTypes.Email) ?? "User email not found",
+            .FindFirstValue(ClaimTypes.Email) ?? "User",
 
             Lectures = sidebarItems
         };

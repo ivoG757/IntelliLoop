@@ -1,6 +1,7 @@
 ﻿using IntelliLoop.Core.Contracts.Services;
 using IntelliLoop.Core.Entities.Enums;
 using IntelliLoop.Core.Entities.Models;
+using IntelliLoop.Web.Mapping;
 using IntelliLoop.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -81,39 +82,47 @@ namespace IntelliLoop.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Processing([FromRoute] string id)
+        public async Task<IActionResult> Processing([FromRoute] Guid id)
         {
             var userId = GetUserId();
 
-            var IdIsGuid = Guid.TryParse(id, out var jobId);
-
-            if (!IdIsGuid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            ProcessingJob? job = await _lectureService.GetLectureJobByIdAsync(jobId, userId);
+            ProcessingJob? job = await _lectureService.GetLectureJobByIdAsync(id, userId);
 
             if (job == null)
             {
                 return NotFound();
             }
 
-            if (job.Status != LectureGenerationStatus.Completed)
+            if (job.Status == LectureGenerationStatus.Failed)
             {
+                return View("Error"); //TODO: Add an actual Error page with retry
+            }
+
+            if(job.Status != LectureGenerationStatus.Completed)
+            {
+                var stepNames = StatusManager.GetSteps(job.Status);
+                int currentStep = (int)job.Status;
+
+                var steps = new List<ProcessingStepViewModel>();
+
+                for (int i = 0; i < stepNames.Count; i++)
+                {
+                    steps.Add(new ProcessingStepViewModel
+                    {
+                        Name = stepNames[i],
+                        IsDone = i < currentStep,
+                        IsCurrent = i == currentStep
+                    });
+                }
+
                 return View(new ProcessingJobViewModel
                 {
                     Id = job.Id,
-                    Status = job.Status,
+                    Title = StatusManager.Map(job.Status),
+                    Steps = steps
                 });
             }
 
-            if (job.LectureId == null)
-            {
-                _logger.LogError("Job {JobId} is completed but has no associated lecture.", job.Id);
-
-                return Problem("The lecture could not be found.");
-            }
 
             return RedirectToAction(nameof(Index), new { id = job.Id });
         }

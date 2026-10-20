@@ -1,10 +1,12 @@
 ﻿using IntelliLoop.Core.Entities.Enums;
+using System.Net.NetworkInformation;
 
 namespace IntelliLoop.Web.Models
 {
     public class ProcessingJobViewModel
     {
         public Guid Id { get; set; }
-        public LectureGenerationStatus Status { get; set; }
+        public string Title { get; init; } = "";
+        public IReadOnlyList<ProcessingStepViewModel> Steps { get; init; } = [];
     }
 }

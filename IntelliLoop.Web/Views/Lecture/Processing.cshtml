@@ -1,17 +1,9 @@
 ﻿@model ProcessingJobViewModel
+@using IntelliLoop.Web.Mapping
+
 @{
     ViewData["Title"] = "Processing Lecture";
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
-
-    var steps = new[]
-    {
-        "Uploading audio",
-        "Transcribing lecture",
-        "Extracting knowledge",
-        "Creating study notes"
-    };
-
-    int currentStep = (int)Model.Status;
 }
 
 @section Styles {
@@ -23,26 +15,22 @@
         <i class="bi bi-file-earmark-music"></i>
     </div>
 
-    <h1>Processing your material...</h1>
+    <h1>@Model.Title</h1>
     <p>Your audio is being prepared.</p>
 
     <ol class="process-list">
-        @for (int i = 0; i < steps.Length; i++)
+        @foreach (var step in Model.Steps)
         {
-            bool completed = i < currentStep;
-            bool current = i == currentStep;
-
-            <li class="@(completed ? "step-done" : current ? "step-current" : "")">
+            <li class="@(step.IsDone ? "step-done" : step.IsCurrent ? "step-current" : "")">
                 <span class="step-icon">
-                    @if (completed)
+                    @if (step.IsDone)
                     {
                         <i class="bi bi-check"></i>
                     }
                 </span>
 
-                @steps[i]
+                @step.Name
             </li>
         }
     </ol>
 </section>
-
