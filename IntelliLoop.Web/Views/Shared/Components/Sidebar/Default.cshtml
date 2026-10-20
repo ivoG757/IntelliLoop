@@ -1,0 +1,54 @@
+﻿@model SidebarViewModel
+@using IntelliLoop.Core.Entities.Enums;
+
+<aside class="sidebar" aria-label="Workspace navigation">
+    <div class="sidebar-footer">
+        <span class="avatar">@Model.UserEmail.Substring(0, 1).ToUpper()</span>
+        <span>@Model.UserEmail</span>
+    </div>
+
+    <h2 class="sidebar-heading">My Lectures</h2>
+
+    <nav class="sidebar-list">
+        <a class="side-action" asp-action="Upload" asp-controller="Lecture">
+            <i class="bi bi-plus-lg"></i>
+            <span>New Lecture</span>
+        </a>
+
+        <div class="side-divider"></div>
+
+        @foreach(var current in Model.Lectures)
+        {
+            var isProcessing = current.Status != LectureGenerationStatus.Completed && current.Status != LectureGenerationStatus.Failed;
+
+            if (isProcessing)
+            {
+                <a class="lecture-link processing" asp-controller="Lecture" asp-action="Processing" asp-route-id="@current.JobId">
+                    <span class="status-pulse"></span>
+                    <span class="lecture-link-text">
+                        <span class="lecture-title">@current.Title</span>
+                    </span>
+                </a>
+            }
+            else if (current.Status == LectureGenerationStatus.Failed)
+            {
+                <a class="lecture-link failed" asp-controller="Lecture" asp-action="Delete" asp-route-id="@current.JobId">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <span class="lecture-link-text">
+                        <span class="lecture-title">@current.Title</span>
+                    </span>
+                </a>
+            }
+            else
+            {
+                <a class="lecture-link active" asp-controller="Lecture" asp-action="Index" asp-route-id="@current.JobId">
+                    <i class="bi bi-file-earmark-text"></i>
+                    <span class="lecture-link-text">
+                        <span class="lecture-title">@current.Title</span>
+                    </span>
+                </a>
+            }
+        }
+    </nav>
+    <div class="sidebar-spacer"></div>
+</aside>

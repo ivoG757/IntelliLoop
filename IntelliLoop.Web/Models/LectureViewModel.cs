@@ -2,6 +2,7 @@
 {
     public class LectureViewModel
     {
+        public Guid Id { get; set; }
         public string Title { get; set; } = null!;
         public string Summary { get; set; } = null!;
         public Guid JobId { get; set; }

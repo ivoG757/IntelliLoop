@@ -14,7 +14,7 @@
 <body>
     <div class="workspace">
 
-        <partial name="~/Views/Shared/Partials/_Sidebar.cshtml" />
+        @await Component.InvokeAsync("Sidebar")
 
         <main class="main">
             @RenderBody()

@@ -1,5 +1,6 @@
 ﻿using IntelliLoop.Core.Contracts.Repositories;
 using IntelliLoop.Core.Contracts.Services;
+using IntelliLoop.Core.DTOs;
 using IntelliLoop.Core.Entities.Enums;
 using IntelliLoop.Core.Entities.Models;
 using Microsoft.Extensions.Logging;
@@ -17,8 +18,7 @@ namespace IntelliLoop.Core.Services
         public LectureService(Channel<Guid> jobChannel,
             ILectureProcessingRepository lectureGenerationRepository,
             ILogger<LectureService> logger,
-            IFileStorage fileStorage, 
-            ILectureRepository lectureRepository,
+            IFileStorage fileStorage,
             IUnitOfWork uof)
         {
             _jobChannel = jobChannel;
@@ -119,7 +119,22 @@ namespace IntelliLoop.Core.Services
         {
             var lecture = await _lectureProcessingRepository.GetLectureByJobIdAsync(jobId, userId);
 
+            
+
             return lecture;
+        }
+
+        public async Task<IEnumerable<LectureProcessingJobResponseDto>> GetJobsByUserIdAsync(Guid userId)
+        {
+            var processingJobs = await _lectureProcessingRepository.GetJobsByUserIdAsync(userId);
+
+            return processingJobs.Select(job => 
+            new LectureProcessingJobResponseDto
+            {
+                JobId = job.Id,
+                Title = job.Lecture?.Title ?? string.Empty,
+                Status = job.Status
+            });
         }
     }
 }

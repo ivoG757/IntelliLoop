@@ -2,14 +2,11 @@
 using IntelliLoop.Core.Entities.Enums;
 using IntelliLoop.Core.Entities.Models;
 using IntelliLoop.Web.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace IntelliLoop.Web.Controllers
 {
-    [Authorize]
-    public class LectureController : Controller
+    public class LectureController : BaseController
     {
         private readonly ILectureService _lectureService;
         private readonly ILogger<LectureController> _logger;
@@ -119,18 +116,6 @@ namespace IntelliLoop.Web.Controllers
             }
 
             return RedirectToAction(nameof(Index), new { id = job.Id });
-        }
-
-        private Guid GetUserId()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (!Guid.TryParse(userId, out var id))
-            {
-                throw new InvalidOperationException("The authenticated user's ID is not a valid GUID.");
-            }
-
-            return id;
         }
     }
 }

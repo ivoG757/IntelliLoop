@@ -1,13 +1,20 @@
 using IntelliLoop.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace IntelliLoop.Web.Controllers
 {
-    public class HomeController : Controller
+    [AllowAnonymous]
+    public class HomeController : BaseController
     {
         public IActionResult Index()
         {
+            if(IsUserAuthenticated())
+            {
+                return RedirectToAction(nameof(LectureController.Upload), "Lecture");
+            }
+
             return View();
         }
 

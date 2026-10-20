@@ -28,6 +28,16 @@ namespace IntelliLoop.Infrastructure.Data.Repositories
                 .FirstOrDefaultAsync(j => j.Id == jobId);
         }
 
+        public async Task<IEnumerable<ProcessingJob>> GetJobsByUserIdAsync(Guid userId)
+        {
+            return await _context.ProcessingJobs
+                .AsNoTracking()
+                .Include(j => j.Lecture)
+                .Where(j => j.UserId == userId.ToString())
+                .OrderByDescending(j => j.CreatedAt)
+                .ToListAsync();
+        }
+
         public async Task<Lecture?> GetLectureByJobIdAsync(Guid jobId, Guid userId)
         {
             return await _context.Lectures
