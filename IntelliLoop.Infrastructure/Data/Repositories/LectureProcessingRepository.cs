@@ -34,9 +34,9 @@ namespace IntelliLoop.Infrastructure.Data.Repositories
                 .AsNoTracking()
                 .Include(j => j.Lecture)
                 .Where(j => j.UserId == userId.ToString())
+                .OrderByDescending(j => j.CreatedAt)
                 .Skip(skip)
                 .Take(take)
-                .OrderByDescending(j => j.CreatedAt)
                 .ToListAsync();
         }
 
