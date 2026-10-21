@@ -1,6 +1,8 @@
-﻿using IntelliLoop.Core.Contracts.Services;
+﻿using IntelliLoop.Common.Constants;
+using IntelliLoop.Core.Contracts.Services;
+using IntelliLoop.Core.DTOs.Request;
+using IntelliLoop.Core.DTOs.Response;
 using IntelliLoop.Core.Entities.Enums;
-using IntelliLoop.Core.Entities.Models;
 using IntelliLoop.Web.Mapping;
 using IntelliLoop.Web.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -18,40 +20,44 @@ namespace IntelliLoop.Web.Controllers
             _lectureService = lectureService;
             _logger = logger;
         }
-        public async Task<IActionResult> Index(Guid id)
+        public async Task<IActionResult> Index([FromRoute] Guid id)
         {
             var userId = GetUserId();
 
-            var lecture = await _lectureService.GetLectureByJobIdAsync(id, userId);
+            LectureResponseDto? lecture = await _lectureService
+                .GetLectureAsync(BuildJobRequest(id));
 
-            var lectureViewModel = new LectureViewModel
-            {
-                Title = lecture?.Title ?? "Lecture Not Found",
-                Summary = lecture?.Summary ?? "No summary available.",
-                KeyConcepts = lecture?.KeyConcepts ?? new List<string>(),
-                Notes = lecture?.Notes.Select(n => new NoteViewModel
-                {
-                    Title = n.Title,
-                    Content = n.Content
-                }).ToList() ?? new List<NoteViewModel>(),
-
-                Transcript = lecture?.Transcript ?? "No transcript available.",
-                JobId = id,
-            };
-
-            return View(lectureViewModel);
-        }
-        public async Task<IActionResult> Audio(Guid id)
-        {
-            var userId = GetUserId();
-            var audioFile = await _lectureService.GetAudioByJobIdAsync(id, userId);
-
-            if (audioFile == null)
+            if(lecture is null)
             {
                 return NotFound();
             }
 
-            return File(audioFile, "audio/wav", enableRangeProcessing: true);
+            var viewModel = new LectureViewModel
+            {
+                Title = lecture.Title,
+                Summary = lecture.Summary,
+                KeyConcepts = lecture.Concepts ?? new List<string>(),
+                Notes = lecture.Notes.Select(n => new NoteViewModel
+                {
+                    Title = n.Title,
+                    Content = n.Content
+                }).ToList(),
+                Transcript = lecture.Transcript ?? "No transcript available.",
+                JobId = id
+            };
+
+            return View(viewModel);
+        }
+        public async Task<IActionResult> Audio(Guid id)
+        {
+            AudioResponseDto? audio = await _lectureService.GetAudioAsync(BuildJobRequest(id));
+
+            if (audio is null)
+            {
+                return NotFound();
+            }
+
+            return File(audio.Content, audio.ContentType, enableRangeProcessing: true);
         }
 
 
@@ -62,22 +68,49 @@ namespace IntelliLoop.Web.Controllers
         }
 
         [HttpPost]
+        [RequestSizeLimit(AudioConstants.MaxAudioFileSizeBytes)]
+        [RequestFormLimits(MultipartBodyLengthLimit = AudioConstants.MaxAudioFileSizeBytes)]
         public async Task<IActionResult> Upload(IFormFile file)
         {
             var userId = GetUserId();
 
-            if (file == null || file.Length == 0)
+            if (file is null)
             {
-                ModelState.AddModelError("file", "Please select an audio file.");
+                throw new ArgumentNullException();
+            }
+
+            string fileName = Path.GetFileName(file.FileName ?? string.Empty);
+            if (string.IsNullOrWhiteSpace(fileName) ||
+                !AudioConstants.AllowedAudioExtensions.Contains(Path.GetExtension(fileName)))
+            {
+                ModelState.AddModelError(nameof(file), "The file type is not supported.");
                 return View();
             }
 
-            Guid jobId = await _lectureService.QueueLectureGenerationAsync(file.OpenReadStream(), file.FileName, userId);
+            if (file.Length > AudioConstants.MaxAudioFileSizeBytes)
+            {
+                ModelState.AddModelError("file",
+                    $"Unsupported file type. Allowed: " +
+                    $"{string.Join(", ", AudioConstants.AllowedAudioExtensions)}");
+                return View();
+            }
+
+            await using var stream = file.OpenReadStream();
+
+            var request = new UploadLectureRequestDto
+            {
+                Content = stream,
+                UserId = userId,
+                FileName = file.FileName ?? string.Empty
+            };
+
+            Guid jobId = await _lectureService.CreateJobAsync(request);
 
             return RedirectToAction(nameof(Processing),
                 new
                 {
-                    Id = jobId
+                    id = jobId
+
                 });
         }
 
@@ -86,45 +119,55 @@ namespace IntelliLoop.Web.Controllers
         {
             var userId = GetUserId();
 
-            ProcessingJob? job = await _lectureService.GetLectureJobByIdAsync(id, userId);
+            JobResponseDto? response = await _lectureService.GetJobAsync(BuildJobRequest(id));
 
-            if (job == null)
+            if (response == null)
             {
                 return NotFound();
             }
 
-            if (job.Status == LectureGenerationStatus.Failed)
+            if (response.Status == LectureGenerationStatus.Failed)
             {
                 return View("Error"); //TODO: Add an actual Error page with retry
             }
 
-            if(job.Status != LectureGenerationStatus.Completed)
+            if(response.Status != LectureGenerationStatus.Completed)
             {
-                var stepNames = StatusManager.GetSteps(job.Status);
-                int currentStep = (int)job.Status;
+                return View(BuildProcessingViewModel(response));
+            }
 
-                var steps = new List<ProcessingStepViewModel>();
+            return RedirectToAction(nameof(Index), new { id = response.JobId });
+        }
+        private JobRequestDto BuildJobRequest(Guid jobId) =>
+            new JobRequestDto
+        {
+            JobId = jobId,
+            UserId = GetUserId()
+        };
 
-                for (int i = 0; i < stepNames.Count; i++)
+        private static ProcessingJobViewModel BuildProcessingViewModel(JobResponseDto job)
+        {
+            var stepNames = StatusManager.GetSteps(job.Status);
+            int currentStep = (int)job.Status;
+
+            var steps = new List<ProcessingStepViewModel>();
+
+            for (int i = 0; i < stepNames.Count; i++)
+            {
+                steps.Add(new ProcessingStepViewModel
                 {
-                    steps.Add(new ProcessingStepViewModel
-                    {
-                        Name = stepNames[i],
-                        IsDone = i < currentStep,
-                        IsCurrent = i == currentStep
-                    });
-                }
-
-                return View(new ProcessingJobViewModel
-                {
-                    Id = job.Id,
-                    Title = StatusManager.Map(job.Status),
-                    Steps = steps
+                    Name = stepNames[i],
+                    IsDone = i < currentStep,
+                    IsCurrent = i == currentStep
                 });
             }
 
-
-            return RedirectToAction(nameof(Index), new { id = job.Id });
+            return new ProcessingJobViewModel
+            {
+                Id = job.JobId,
+                Title = StatusManager.Map(job.Status),
+                Steps = steps
+            };
         }
     }
 }

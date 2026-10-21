@@ -8,7 +8,7 @@
         public const string MonoAudioArgument = "-ac 1";
         public const string PcmAudioCodec = "pcm_s16le";
         public const string TempFileSuffix = ".temp";
-        public static readonly long MaxAudioFileSizeBytes = 100L * 1024 * 1024;
+        public const long MaxAudioFileSizeBytes = 100L * 1024 * 1024;
 
         public static readonly HashSet<string> AllowedAudioExtensions =
         new(StringComparer.OrdinalIgnoreCase)

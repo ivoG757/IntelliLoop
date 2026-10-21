@@ -68,7 +68,7 @@ namespace IntelliLoop.Core.Services
             {
                 Title = summary.Title,
                 Summary = summary.Summary,
-                KeyConcepts = summary.KeyConcepts,
+                Concepts = summary.KeyConcepts,
                 Notes = summary.Notes,
                 Transcript = transcript,
                 ProcessingJob = job,

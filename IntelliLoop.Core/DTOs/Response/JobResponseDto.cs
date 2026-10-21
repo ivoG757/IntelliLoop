@@ -1,8 +1,8 @@
 ﻿using IntelliLoop.Core.Entities.Enums;
 
-namespace IntelliLoop.Core.DTOs
+namespace IntelliLoop.Core.DTOs.Response
 {
-    public class LectureProcessingJobResponseDto
+    public class JobResponseDto
     {
         public Guid JobId { get; set; }
 

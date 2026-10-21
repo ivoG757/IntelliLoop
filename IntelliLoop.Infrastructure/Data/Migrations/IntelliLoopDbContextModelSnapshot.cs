@@ -28,7 +28,7 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.PrimitiveCollection<string>("KeyConcepts")
+                    b.PrimitiveCollection<string>("Concepts")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

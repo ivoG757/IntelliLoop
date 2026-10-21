@@ -15,7 +15,7 @@ namespace IntelliLoop.Core.Entities.Models
 
         [Required]
         public string Summary { get; set; } = null!;
-        public ICollection<string> KeyConcepts { get; set; } = new List<string>();
+        public ICollection<string> Concepts { get; set; } = new List<string>();
         public ICollection<NoteSection> Notes { get; set; } = new List<NoteSection>();
         public ProcessingJob ProcessingJob { get; set; } = null!;
 

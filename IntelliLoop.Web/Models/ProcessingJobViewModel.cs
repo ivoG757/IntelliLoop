@@ -1,7 +1,4 @@
-﻿using IntelliLoop.Core.Entities.Enums;
-using System.Net.NetworkInformation;
-
-namespace IntelliLoop.Web.Models
+﻿namespace IntelliLoop.Web.Models
 {
     public class ProcessingJobViewModel
     {

@@ -3,7 +3,9 @@ using IntelliLoop.Web.Mapping;
 using IntelliLoop.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-
+using IntelliLoop.Common;
+using IntelliLoop.Common.Constants;
+using IntelliLoop.Core.DTOs.Request;
 namespace IntelliLoop.Web.ViewComponents;
 
 public class SidebarViewComponent : ViewComponent
@@ -29,8 +31,14 @@ public class SidebarViewComponent : ViewComponent
         {
             return Content(string.Empty);
         }
+        var request = new JobListRequestDto()
+        {
+            UserId = userId,
+            Take = ApplicationConstants.Take,
+            Skip = 0
+        };
 
-        var jobs = await _lectureService.GetJobsByUserIdAsync(userId);
+        var jobs = await _lectureService.GetJobsAsync(request);
 
         var sidebarItems = jobs.Select(dto =>
         new SidebarItemViewModel

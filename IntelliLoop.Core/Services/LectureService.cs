@@ -1,9 +1,12 @@
-﻿using IntelliLoop.Core.Contracts.Repositories;
+﻿using IntelliLoop.Common.Constants;
+using IntelliLoop.Core.Contracts.Repositories;
 using IntelliLoop.Core.Contracts.Services;
-using IntelliLoop.Core.DTOs;
+using IntelliLoop.Core.DTOs.Request;
+using IntelliLoop.Core.DTOs.Response;
 using IntelliLoop.Core.Entities.Enums;
 using IntelliLoop.Core.Entities.Models;
 using Microsoft.Extensions.Logging;
+using System.Text.Json.Serialization;
 using System.Threading.Channels;
 
 namespace IntelliLoop.Core.Services
@@ -30,8 +33,12 @@ namespace IntelliLoop.Core.Services
         }
 
 
-        public async Task<Guid> QueueLectureGenerationAsync(Stream file, string fileName, Guid userId)
+        public async Task<Guid> CreateJobAsync(UploadLectureRequestDto request)
         {
+            Stream file = request.Content;
+            string fileName = request.FileName;
+            Guid userId = request.UserId;
+
             var filePath = string.Empty;
 
             try
@@ -39,13 +46,13 @@ namespace IntelliLoop.Core.Services
                 filePath = await _fileStorage.SaveAsync(file, fileName, userId);
 
             }
-            catch
+            catch(Exception ex)
             {
-                _logger.LogError("Failed to save the uploaded file for user {UserId}.", userId);
+                _logger.LogError(ex, "Failed to save the uploaded file for user {UserId}.", userId);
                 throw;
             }
 
-            ProcessingJob job = new ProcessingJob
+            var job = new ProcessingJob
             {
                 FilePath = filePath,
                 Status = LectureGenerationStatus.Queued,
@@ -56,35 +63,37 @@ namespace IntelliLoop.Core.Services
             try
             {
                 await _lectureProcessingRepository.AddJobAsync(job);
+                await _uof.SaveChangesAsync();
             }
-            catch
+            catch(Exception ex)
             {
                 await _fileStorage.Delete(filePath);
 
-                _logger.LogError("Failed to add the processing job for user {UserId}.", userId);
+                _logger.LogError(ex, "Failed to add the processing job for user {UserId}.", userId);
                 throw;
             }
-
-            await _uof.SaveChangesAsync();
 
             await _jobChannel.Writer.WriteAsync(job.Id);
 
             return job.Id;
         }
 
-        public async Task<Stream?> GetAudioByJobIdAsync(Guid jobId, Guid userId)
+        public async Task<AudioResponseDto?> GetAudioAsync(JobRequestDto request)
         {
-            var job = await _lectureProcessingRepository.GetJobByIdAsync(jobId, userId);
+            var jobId = request.JobId;
+            var job = await _lectureProcessingRepository.GetJobByIdAsync(jobId, request.UserId);
 
-            if (job == null)
+            if (job is null)
             {
-                _logger.LogWarning("Lecture generation job with ID: {jobId} not found.", jobId);
+                _logger.LogWarning("Lecture generation job with ID: {jobId} not found.", 
+                    jobId);
                 return null;
             }
 
             if (job.Status != LectureGenerationStatus.Completed)
             {
-                _logger.LogWarning("Lecture generation job with ID: {jobId} is not completed yet.", jobId);
+                _logger.LogWarning("Lecture generation job with ID: {jobId} is not completed yet.", 
+                    jobId);
 
                 return null;
             }
@@ -93,48 +102,72 @@ namespace IntelliLoop.Core.Services
 
             if (string.IsNullOrWhiteSpace(path) || !_fileStorage.Exists(path))
             {
-                _logger.LogWarning("Audio file for job {JobId} was not found.", jobId);
+                _logger.LogWarning("Audio file for job {JobId} was not found.", 
+                    jobId);
                 return null;
             }
 
             var audioStream = _fileStorage.GetStream(path);
-          
-            return audioStream;
+
+            return new AudioResponseDto
+            {
+                Content = audioStream,
+                ContentType = AudioConstants.WavContentType
+            };
         }
 
-        public async Task<ProcessingJob?> GetLectureJobByIdAsync(Guid jobId, Guid userId)
+        public async Task<JobResponseDto?> GetJobAsync(JobRequestDto request)
         {
-            var job = await _lectureProcessingRepository.GetJobByIdAsync(jobId, userId);
+            var job = await _lectureProcessingRepository
+                .GetJobByIdAsync(request.JobId, request.UserId);
 
-            if (job == null)
+            if (job is null)
             {
-                _logger.LogWarning("Lecture generation job with ID: {JobId} not found.", jobId);
+                _logger.LogWarning("Job {JobId} not found.",
+                    request.JobId);
                 return null;
             }
 
-            return job;
+            return ToJobResponse(job);
         }
 
-        public async Task<Lecture?> GetLectureByJobIdAsync(Guid jobId, Guid userId)
+        public async Task<LectureResponseDto?> GetLectureAsync(JobRequestDto request)
         {
-            var lecture = await _lectureProcessingRepository.GetLectureByJobIdAsync(jobId, userId);
+            var lecture = await _lectureProcessingRepository
+                .GetLectureByJobIdAsync(request.JobId, request.UserId);
 
-            
-
-            return lecture;
-        }
-
-        public async Task<IEnumerable<LectureProcessingJobResponseDto>> GetJobsByUserIdAsync(Guid userId)
-        {
-            var processingJobs = await _lectureProcessingRepository.GetJobsByUserIdAsync(userId);
-
-            return processingJobs.Select(job => 
-            new LectureProcessingJobResponseDto
+            if(lecture is null)
             {
-                JobId = job.Id,
-                Title = job.Lecture?.Title ?? string.Empty,
-                Status = job.Status
-            });
+                return null;
+            }
+
+            return new LectureResponseDto
+            {
+                Title = lecture.Title,
+                Summary = lecture.Summary,
+                Concepts = lecture.Concepts,
+                Transcript = lecture.Transcript,
+                Notes = lecture.Notes.Select(n => 
+                new NoteResponseDto
+                {
+                    Title = n.Title,
+                    Content = n.Content
+                }).ToList()
+            };
         }
+
+        public async Task<ICollection<JobResponseDto>> GetJobsAsync(JobListRequestDto request)
+        {
+            var processingJobs = await _lectureProcessingRepository
+                .GetJobsByUserIdAsync(request.UserId, request.Skip, request.Take);
+
+            return processingJobs.Select(ToJobResponse).ToList();
+        }
+        private static JobResponseDto ToJobResponse(ProcessingJob job) => new()
+        {
+            JobId = job.Id,
+            Title = job.Lecture?.Title ?? string.Empty,
+            Status = job.Status
+        };
     }
 }
