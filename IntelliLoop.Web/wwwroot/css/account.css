@@ -1,32 +1,76 @@
 ﻿.account-container {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    background-color: #f6f8fa;
+    background-color: #f7f7f5;
+    color: #37352f;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     padding: 2rem 1rem;
-    color: #1f2328;
 }
 
 .account-box {
     background-color: #ffffff;
+    color: #37352f;
     padding: 2rem;
-    border: 1px solid #d0d7de;
+    border: 1px solid #e7e7e5;
     border-radius: 8px;
-    box-shadow: 0 8px 24px rgba(140, 149, 159, 0.2);
+    box-shadow: 0 8px 24px rgba(15, 15, 15, .08);
     max-width: 500px;
     width: 100%;
 }
+    .account-box h1,
+    .account-box h2,
+    .account-box h3,
+    .account-box h4,
+    .account-box label {
+        color: inherit;
+    }
 
-.form-control {
-    background-color: #f6f8fa;
-}
-.form-control:focus {
-    background-color: #f6f8fa;
-    color: #1f2328;
+    .account-box a {
+        color: #2f6f9f;
+    }
 
-}
+    .account-box .form-control,
+    .account-box .form-select {
+        background-color: #ffffff;
+        color: #37352f;
+        border-color: #e7e7e5;
+    }
+
+        .account-box .form-control::placeholder {
+            color: #787774;
+            opacity: 1;
+        }
+
+        .account-box .form-control:focus,
+        .account-box .form-select:focus {
+            background-color: #ffffff;
+            color: #37352f;
+            border-color: #2f6f9f;
+            box-shadow: 0 0 0 .2rem rgba(47, 111, 159, .18);
+        }
+
+    .account-box .form-check-input {
+        border-color: #e7e7e5;
+    }
+
+        .account-box .form-check-input:checked {
+            background-color: #37352f;
+            border-color: #37352f;
+        }
+
+    .account-box .btn-primary {
+        background-color: #37352f;
+        border-color: #37352f;
+        color: #ffffff;
+    }
+
+        .account-box .btn-primary:hover {
+            background-color: #4a4841;
+            border-color: #4a4841;
+            color: #ffffff;
+        }
 
 .field-validation-error,
 .field-validation-valid {
@@ -39,43 +83,78 @@
 }
 
 .lockout-message {
-    color: #664d03;
-    background-color: #fff8e1;
-    border: 1px solid #f1dfaa;
+    color: #2f6f9f;
+    background-color: #e9f2fb;
+    border: 1px solid #e7e7e5;
     border-radius: 6px;
     padding: 14px 16px;
     margin: 0 0 24px;
     text-align: center;
     line-height: 1.5;
-    font-size: 0.95rem;
+    font-size: .95rem;
 }
 
 @media (prefers-color-scheme: dark) {
     .account-container {
-        background-color: #0d1117;
-        color: #f0f6fc;
+        background-color: #252525;
+        color: #e7e7e5;
     }
 
     .account-box {
-        background-color: #161b22;
-        border-color: #30363d;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        background-color: #2f2f2f;
+        color: #e7e7e5;
+        border-color: #484848;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, .2);
     }
 
-    .form-control {
-        background-color: #0d1117;
-        color: #f0f6fc;
-        border-color: #30363d;
-    }
-    .form-control:focus {
-        background-color: #0d1117;
-        color: #f0f6fc;
+        .account-box a {
+            color: #9cc8e8;
+        }
 
-    }
+        .account-box .form-control,
+        .account-box .form-select {
+            background-color: #2f2f2f;
+            color: #e7e7e5;
+            border-color: #484848;
+        }
+
+            .account-box .form-control::placeholder {
+                color: #a4a4a0;
+            }
+
+            .account-box .form-control:focus,
+            .account-box .form-select:focus {
+                background-color: #2f2f2f;
+                color: #e7e7e5;
+                border-color: #9cc8e8;
+                box-shadow: 0 0 0 .2rem rgba(156, 200, 232, .18);
+            }
+
+        .account-box .form-check-input {
+            background-color: #2f2f2f;
+            border-color: #484848;
+        }
+
+            .account-box .form-check-input:checked {
+                background-color: #e7e7e5;
+                border-color: #e7e7e5;
+            }
+
+        .account-box .btn-primary {
+            background-color: #e7e7e5;
+            border-color: #e7e7e5;
+            color: #2f2f2f;
+        }
+
+            .account-box .btn-primary:hover {
+                background-color: #c9c9c5;
+                border-color: #c9c9c5;
+                color: #2f2f2f;
+            }
 
     .lockout-message {
-        color: #f0d98c;
-        background-color: #302709;
-        border-color: #65501b;
+        color: #9cc8e8;
+        background-color: #31475a;
+        border-color: #484848;
     }
 }
