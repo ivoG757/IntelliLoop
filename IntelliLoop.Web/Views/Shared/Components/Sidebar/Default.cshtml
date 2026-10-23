@@ -3,7 +3,7 @@
 
 <aside class="sidebar" aria-label="Workspace navigation">
     <div class="sidebar-footer">
-        <span class="avatar">@Model.UserEmail.Substring(0, 1).ToUpper()</span>
+        <span class="avatar">@Model.UserEmail[0]</span>
         <span>@Model.UserEmail</span>
     </div>
 
@@ -17,38 +17,54 @@
 
         <div class="side-divider"></div>
 
-        @foreach(var current in Model.Lectures)
+        @foreach (var current in Model.Lectures)
         {
             var isProcessing = current.Status != LectureGenerationStatus.Completed && current.Status != LectureGenerationStatus.Failed;
 
-            if (isProcessing)
-            {
-                <a class="lecture-link processing" asp-controller="Lecture" asp-action="Processing" asp-route-id="@current.JobId">
-                    <span class="status-pulse"></span>
-                    <span class="lecture-link-text">
-                        <span class="lecture-title">@current.Title</span>
-                    </span>
-                </a>
-            }
-            else if (current.Status == LectureGenerationStatus.Failed)
-            {
-                <a class="lecture-link failed" asp-controller="Lecture" asp-action="Delete" asp-route-id="@current.JobId">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    <span class="lecture-link-text">
-                        <span class="lecture-title">@current.Title</span>
-                    </span>
-                </a>
-            }
-            else
-            {
-                <a class="lecture-link active" asp-controller="Lecture" asp-action="Index" asp-route-id="@current.JobId">
-                    <i class="bi bi-file-earmark-text"></i>
-                    <span class="lecture-link-text">
-                        <span class="lecture-title">@current.Title</span>
-                    </span>
-                </a>
-            }
+            var currentRotue = Context.Request.RouteValues["id"]?.ToString();
+
+            var isCurrent = current.Status == LectureGenerationStatus.Completed 
+            ? currentRotue == current.LectureId?.ToString()
+            : currentRotue == current.JobId.ToString();
+
+            <div class="lecture-row">
+                @if (isProcessing)
+                {
+                    <a class="lecture-link processing @(isCurrent ? "active" : "")" 
+                    asp-controller="Lecture" asp-action="Processing" asp-route-id="@current.JobId">
+                        <span class="status-pulse"></span>
+                        <span class="lecture-link-text">
+                            <span class="lecture-title">@current.Title</span>
+                        </span>
+                    </a>
+                }
+                else if (current.Status == LectureGenerationStatus.Failed)
+                {
+                    <a class="lecture-link failed" asp-controller="Lecture" asp-action="Processing" asp-route-id="@current.JobId">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <span class="lecture-link-text">
+                            <span class="lecture-title">@current.Title</span>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a class="lecture-link @(isCurrent ? "active" : "")" asp-controller="Lecture" asp-action="Index" asp-route-id="@current.LectureId">
+                        <i class="bi bi-file-earmark-text"></i>
+                        <span class="lecture-link-text">
+                            <span class="lecture-title">@current.Title</span> 
+                        </span>
+                    </a>
+                }
+
+                @if (!isProcessing)
+                {
+                    <a class="lecture-delete-route" asp-controller="Lecture" asp-action="Delete" asp-route-id="@current.LectureId"
+                    title="Delete lecture" aria-label="Delete @current.Title">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                }
+            </div>
         }
     </nav>
-    <div class="sidebar-spacer"></div>
 </aside>

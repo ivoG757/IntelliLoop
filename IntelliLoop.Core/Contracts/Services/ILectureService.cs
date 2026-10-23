@@ -21,20 +21,29 @@ namespace IntelliLoop.Core.Contracts.Services
         /// Returns the file associated with the processing job
         /// </summary>
         /// <param name="jobRequestDto"></param>
-        public Task<AudioResponseDto?> GetAudioAsync(JobRequestDto jobRequestDto);
+        public Task<AudioResponseDto?> GetAudioAsync(LectureRequestDto jobRequestDto);
 
         /// <summary>
         /// Returns a finished lecture by the lecture's job id. 
         /// Can be null if the lecture doesn't exist or isn't finished.
         /// </summary>
         /// <param name="request"></param>
-        public Task<LectureResponseDto?> GetLectureAsync(JobRequestDto request);
+        public Task<LectureResponseDto?> GetLectureAsync(LectureRequestDto request);
 
         /// <summary>
         /// Returns a page of the user's jobs, sorted from newest to oldest.
         /// </summary>
         /// <param name="request"></param>
-        /// <returns></returns>
         public Task<ICollection<JobResponseDto>> GetJobsAsync(JobListRequestDto request);
+
+        /// <summary>
+        /// Deletes a lecture that belongs to the user in the request.
+        /// </summary>
+        /// <param name="request">The user and the lecture to delete.</param>
+        /// <returns>
+        /// true if the lecture was deleted; false if it doesn't exist,
+        /// belongs to another user, or is still processing.
+        /// </returns>
+        Task<bool> DeleteAsync(LectureRequestDto request);
     }
 }

@@ -75,7 +75,7 @@ namespace IntelliLoop.Core.Services
                 UserId = job.UserId
             };
 
-            await _lectureRepository.AddLectureAsync(lecture);
+            await _lectureRepository.AddAsync(lecture);
 
             job.Status = LectureGenerationStatus.Completed;
 

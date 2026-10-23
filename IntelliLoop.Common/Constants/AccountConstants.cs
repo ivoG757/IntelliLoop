@@ -4,5 +4,6 @@
     {
         public const int MaximumPasswordLength = 40;
         public const int MinimumPasswordLength = 8;
+        public const string DefaultUser = "User";
     }
 }

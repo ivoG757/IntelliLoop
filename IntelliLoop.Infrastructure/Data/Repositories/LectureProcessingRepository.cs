@@ -18,34 +18,37 @@ namespace IntelliLoop.Infrastructure.Data.Repositories
 
         public async Task<ProcessingJob?> GetJobByIdAsync(Guid jobId, Guid userId)
         {
+            var userIdString = userId.ToString();
+
             return await _context.ProcessingJobs
                 .AsNoTracking()
-                .FirstOrDefaultAsync(j => j.Id == jobId && j.UserId == userId.ToString());
+                .FirstOrDefaultAsync(j => j.Id == jobId && j.UserId == userIdString);
         }
+
         public async Task<ProcessingJob?> GetJobByIdAsync(Guid jobId)
         {
-            return await _context.ProcessingJobs
-                .FirstOrDefaultAsync(j => j.Id == jobId);
+
+            return await _context.ProcessingJobs.FirstOrDefaultAsync(j => j.Id == jobId);
+        }
+
+        public async Task<ProcessingJob?> GetJobByLectureIdAsync(Guid lectureId, Guid userId)
+        {
+            var userIdString = userId.ToString();
+            return await _context.ProcessingJobs.FirstOrDefaultAsync(j => j.LectureId == lectureId && j.UserId == userIdString);
         }
 
         public async Task<IEnumerable<ProcessingJob>> GetJobsByUserIdAsync(Guid userId, int skip, int take)
         {
+            var userIdString = userId.ToString();
+
             return await _context.ProcessingJobs
                 .AsNoTracking()
                 .Include(j => j.Lecture)
-                .Where(j => j.UserId == userId.ToString())
+                .Where(j => j.UserId == userIdString)
                 .OrderByDescending(j => j.CreatedAt)
                 .Skip(skip)
                 .Take(take)
                 .ToListAsync();
-        }
-
-        public async Task<Lecture?> GetLectureByJobIdAsync(Guid jobId, Guid userId)
-        {
-            return await _context.Lectures
-                .AsNoTracking()
-                .Include(l => l.Notes)
-                .FirstOrDefaultAsync(l => l.ProcessingJob!.Id == jobId && l.UserId == userId.ToString());
         }
     }
 }

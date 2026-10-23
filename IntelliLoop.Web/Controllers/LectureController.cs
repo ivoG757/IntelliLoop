@@ -12,20 +12,15 @@ namespace IntelliLoop.Web.Controllers
     public class LectureController : BaseController
     {
         private readonly ILectureService _lectureService;
-        private readonly ILogger<LectureController> _logger;
 
-        public LectureController(ILectureService lectureService,
-            ILogger<LectureController> logger)
+        public LectureController(ILectureService lectureService)
         {
             _lectureService = lectureService;
-            _logger = logger;
         }
         public async Task<IActionResult> Index([FromRoute] Guid id)
         {
-            var userId = GetUserId();
-
             LectureResponseDto? lecture = await _lectureService
-                .GetLectureAsync(BuildJobRequest(id));
+                .GetLectureAsync(BuildLectureRequest(id));
 
             if(lecture is null)
             {
@@ -43,14 +38,14 @@ namespace IntelliLoop.Web.Controllers
                     Content = n.Content
                 }).ToList(),
                 Transcript = lecture.Transcript ?? "No transcript available.",
-                JobId = id
+                Id = id
             };
 
             return View(viewModel);
         }
         public async Task<IActionResult> Audio(Guid id)
         {
-            AudioResponseDto? audio = await _lectureService.GetAudioAsync(BuildJobRequest(id));
+            AudioResponseDto? audio = await _lectureService.GetAudioAsync(BuildLectureRequest(id));
 
             if (audio is null)
             {
@@ -72,8 +67,6 @@ namespace IntelliLoop.Web.Controllers
         [RequestFormLimits(MultipartBodyLengthLimit = AudioConstants.MaxAudioFileSizeBytes)]
         public async Task<IActionResult> Upload(IFormFile file)
         {
-            var userId = GetUserId();
-
             if (file is null)
             {
                 throw new ArgumentNullException();
@@ -100,7 +93,7 @@ namespace IntelliLoop.Web.Controllers
             var request = new UploadLectureRequestDto
             {
                 Content = stream,
-                UserId = userId,
+                UserId = GetUserId(),
                 FileName = file.FileName ?? string.Empty
             };
 
@@ -117,9 +110,13 @@ namespace IntelliLoop.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Processing([FromRoute] Guid id)
         {
-            var userId = GetUserId();
+            var jobRequest = new JobRequestDto
+            {
+                UserId = GetUserId(),
+                JobId = id
+            };
 
-            JobResponseDto? response = await _lectureService.GetJobAsync(BuildJobRequest(id));
+            JobResponseDto? response = await _lectureService.GetJobAsync(jobRequest);
 
             if (response == null)
             {
@@ -136,14 +133,50 @@ namespace IntelliLoop.Web.Controllers
                 return View(BuildProcessingViewModel(response));
             }
 
-            return RedirectToAction(nameof(Index), new { id = response.JobId });
+            return RedirectToAction(nameof(Index), new { id = response.LectureId });
         }
-        private JobRequestDto BuildJobRequest(Guid jobId) =>
-            new JobRequestDto
+
+        [HttpGet]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            JobId = jobId,
-            UserId = GetUserId()
-        };
+            LectureResponseDto? lecture = await _lectureService.GetLectureAsync(BuildLectureRequest(id));
+
+            if(lecture is null)
+            {
+                return NotFound();
+            }
+
+            var model = new DeleteViewModel
+            {
+                Id = id,
+                LectureTitle = lecture.Title
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ConfirmedDelete([FromRoute] Guid id)
+        {
+            var request = BuildLectureRequest(id);
+
+            var isDeleted = await _lectureService.DeleteAsync(request);
+
+            if (!isDeleted)
+            {
+                return NotFound();
+            }
+
+            return RedirectToAction(nameof(Upload));
+        }
+
+        private LectureRequestDto BuildLectureRequest(Guid lectureId) =>
+
+            new LectureRequestDto
+            {
+                LectureId = lectureId,
+                UserId = GetUserId()
+            };
 
         private static ProcessingJobViewModel BuildProcessingViewModel(JobResponseDto job)
         {

@@ -19,7 +19,8 @@ namespace IntelliLoop.Infrastructure.Data
             modelBuilder.Entity<ProcessingJob>()
                 .HasOne(job => job.Lecture)
                 .WithOne(lecture => lecture.ProcessingJob)
-                .HasForeignKey<ProcessingJob>(job => job.LectureId);
+                .HasForeignKey<ProcessingJob>(job => job.LectureId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Lecture>()
                 .HasOne<User>()

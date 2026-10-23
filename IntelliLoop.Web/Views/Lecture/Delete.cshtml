@@ -1,0 +1,27 @@
+﻿@model IntelliLoop.Web.Models.DeleteViewModel
+
+@{
+    ViewData["Title"] = "Delete lecture";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/delete.css" asp-append-version="true" />
+}
+
+<section class="empty-state">
+    <div class="empty-symbol">
+        <i class="bi bi-trash"></i>
+    </div>
+
+    <h1>Are you sure you want to delete "@(Model.LectureTitle)" ?</h1>
+
+    <p>
+        This operation is permanent.
+    </p>
+
+    <form asp-controller="Lecture" asp-action="ConfirmedDelete" asp-route-id="@Model.Id" method="post">
+        <button type="submit" class="primary-btn danger">Delete</button>
+        <a asp-controller="Lecture" asp-action="Index" asp-route-id="@Model.Id" class="side-action">Cancel</a>
+    </form>
+</section>

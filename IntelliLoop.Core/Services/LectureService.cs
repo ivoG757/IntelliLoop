@@ -6,7 +6,6 @@ using IntelliLoop.Core.DTOs.Response;
 using IntelliLoop.Core.Entities.Enums;
 using IntelliLoop.Core.Entities.Models;
 using Microsoft.Extensions.Logging;
-using System.Text.Json.Serialization;
 using System.Threading.Channels;
 
 namespace IntelliLoop.Core.Services
@@ -15,15 +14,18 @@ namespace IntelliLoop.Core.Services
     {
         private readonly Channel<Guid> _jobChannel;
         private readonly ILectureProcessingRepository _lectureProcessingRepository;
+        public readonly ILectureRepository _lectureRepository;
         private readonly ILogger<LectureService> _logger;
         private readonly IFileStorage _fileStorage;
         private readonly IUnitOfWork _uof;
         public LectureService(Channel<Guid> jobChannel,
             ILectureProcessingRepository lectureGenerationRepository,
+            ILectureRepository lectureRepository,
             ILogger<LectureService> logger,
             IFileStorage fileStorage,
             IUnitOfWork uof)
         {
+            _lectureRepository = lectureRepository;
             _jobChannel = jobChannel;
             _lectureProcessingRepository = lectureGenerationRepository;
             _logger = logger;
@@ -78,44 +80,6 @@ namespace IntelliLoop.Core.Services
             return job.Id;
         }
 
-        public async Task<AudioResponseDto?> GetAudioAsync(JobRequestDto request)
-        {
-            var jobId = request.JobId;
-            var job = await _lectureProcessingRepository.GetJobByIdAsync(jobId, request.UserId);
-
-            if (job is null)
-            {
-                _logger.LogWarning("Lecture generation job with ID: {jobId} not found.", 
-                    jobId);
-                return null;
-            }
-
-            if (job.Status != LectureGenerationStatus.Completed)
-            {
-                _logger.LogWarning("Lecture generation job with ID: {jobId} is not completed yet.", 
-                    jobId);
-
-                return null;
-            }
-
-            var path = job.FilePath;
-
-            if (string.IsNullOrWhiteSpace(path) || !_fileStorage.Exists(path))
-            {
-                _logger.LogWarning("Audio file for job {JobId} was not found.", 
-                    jobId);
-                return null;
-            }
-
-            var audioStream = _fileStorage.GetStream(path);
-
-            return new AudioResponseDto
-            {
-                Content = audioStream,
-                ContentType = AudioConstants.WavContentType
-            };
-        }
-
         public async Task<JobResponseDto?> GetJobAsync(JobRequestDto request)
         {
             var job = await _lectureProcessingRepository
@@ -131,10 +95,39 @@ namespace IntelliLoop.Core.Services
             return ToJobResponse(job);
         }
 
-        public async Task<LectureResponseDto?> GetLectureAsync(JobRequestDto request)
+        public async Task<AudioResponseDto?> GetAudioAsync(LectureRequestDto request)
         {
-            var lecture = await _lectureProcessingRepository
-                .GetLectureByJobIdAsync(request.JobId, request.UserId);
+            var job = await _lectureProcessingRepository.GetJobByLectureIdAsync(request.LectureId, request.UserId);
+
+            if (job is null)
+            {
+                _logger.LogWarning("Lecture generation job not found.");
+                return null;
+            }
+
+            var path = job.FilePath;
+
+            if (string.IsNullOrWhiteSpace(path) || !_fileStorage.Exists(path))
+            {
+                _logger.LogWarning("Audio file for job {JobId} was not found.", 
+                    job.Id);
+                return null;
+            }
+
+            var audioStream = _fileStorage.GetStream(path);
+
+            return new AudioResponseDto
+            {
+                Content = audioStream,
+                ContentType = AudioConstants.WavContentType
+            };
+        }
+
+
+        public async Task<LectureResponseDto?> GetLectureAsync(LectureRequestDto request)
+        {
+            var lecture = await _lectureRepository
+                .GetByIdAsync(request.LectureId, request.UserId);
 
             if(lecture is null)
             {
@@ -163,9 +156,20 @@ namespace IntelliLoop.Core.Services
 
             return processingJobs.Select(ToJobResponse).ToList();
         }
+
+        public async Task<bool> DeleteAsync(LectureRequestDto request)
+        {
+            var isDeleted = await _lectureRepository.DeleteByIdAsync(request.LectureId, request.UserId);
+
+            await _uof.SaveChangesAsync();
+
+            return isDeleted;
+        }
+
         private static JobResponseDto ToJobResponse(ProcessingJob job) => new()
         {
             JobId = job.Id,
+            LectureId = job.LectureId,
             Title = job.Lecture?.Title ?? string.Empty,
             Status = job.Status
         };

@@ -7,7 +7,7 @@ namespace IntelliLoop.Web.Controllers
     public abstract class BaseController : Controller
     {
         protected Guid GetUserId() 
-            => User?.Identity?.IsAuthenticated == true ? 
+            => IsUserAuthenticated() == true ? 
             Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? string.Empty) : Guid.Empty;
         protected bool IsUserAuthenticated()
             => User?.Identity?.IsAuthenticated == true;

@@ -21,18 +21,16 @@
         Lecture recording
     </div>
 
-    @* Audio player *@
     <div class="audio-player">
         <div class="player-info">
             <span class="player-label">Original lecture audio</span>
             <audio class="audio-controls" controls preload="metadata">
-                <source src="@Url.Action("Audio", "Lecture", new { id = Model.JobId })" type="audio/wav">
+                <source src="@Url.Action("Audio", "Lecture", new { id = Model.Id })" type="audio/wav">
                 Your browser does not support audio playback.
             </audio>
         </div>
     </div>
 
-    @* Summary *@
     <section class="document-section">
         <h2 class="section-title">Summary</h2>
 
@@ -41,7 +39,6 @@
         </p>
     </section>
 
-    @* Key Concepts*@
     <section class="document-section">
         <h2 class="section-title">Key Concepts</h2>
 
@@ -58,7 +55,6 @@
         </ul>
     </section>
 
-    @* Notes *@
     <section class="document-section">
         <h2 class="section-title">Notes</h2>
 
@@ -73,7 +69,6 @@
         </ol>
     </section>
 
-    @* Transcript *@
     <details class="transcript">
         <summary>
             <i class="bi bi-file-earmark-text"></i>
@@ -89,7 +84,5 @@
 </article>
 
 @section Styles {
-    <link rel="stylesheet"
-          href="~/css/lecture.css"
-          asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/lecture.css" asp-append-version="true" />
 }

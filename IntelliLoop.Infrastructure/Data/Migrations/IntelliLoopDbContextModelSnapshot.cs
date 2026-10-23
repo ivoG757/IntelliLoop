@@ -364,7 +364,8 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
                 {
                     b.HasOne("IntelliLoop.Core.Entities.Models.Lecture", "Lecture")
                         .WithOne("ProcessingJob")
-                        .HasForeignKey("IntelliLoop.Core.Entities.Models.ProcessingJob", "LectureId");
+                        .HasForeignKey("IntelliLoop.Core.Entities.Models.ProcessingJob", "LectureId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("IntelliLoop.Infrastructure.Data.Identity.User", null)
                         .WithMany("ProcessingJobs")

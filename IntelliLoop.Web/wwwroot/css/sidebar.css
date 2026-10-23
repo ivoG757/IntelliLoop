@@ -72,8 +72,8 @@
     }
 
 .lecture-link.active {
-    background: var(--accent);
-    color: var(--accent-foreground);
+    background: var(--muted);
+    color: var(--foreground);
     font-weight: 600;
 }
 
@@ -85,6 +85,64 @@
 
 .lecture-link.processing {
     color: var(--muted-foreground);
+}
+
+.lecture-row {
+    position: relative;
+}
+
+    .lecture-row:hover .lecture-link,
+    .lecture-row:focus-within .lecture-link {
+        padding-right: 40px;
+    }
+
+.lecture-delete-route {
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    transform: translateY(-50%);
+    width: 26px;
+    height: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    border-radius: 5px;
+    background: transparent;
+    color: var(--muted-foreground);
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity .15s ease, background .15s ease, color .15s ease;
+}
+
+.lecture-row:hover .lecture-delete-route,
+.lecture-row:focus-within .lecture-delete-route {
+    opacity: 1;
+}
+
+.lecture-delete-route:hover,
+.lecture-delete-route:focus-visible {
+    background: rgba(220, 38, 38, .12);
+    background: color-mix(in srgb, var(--destructive, #dc2626) 14%, transparent);
+    color: var(--destructive, #dc2626);
+}
+
+.lecture-delete-route:focus-visible {
+    outline: 2px solid var(--destructive, #dc2626);
+    outline-offset: 1px;
+}
+
+@media (hover: none) {
+    .lecture-delete-route {
+        opacity: 1;
+    }
+
+    .lecture-row .lecture-link {
+        padding-right: 40px;
+    }
 }
 
 .status-pulse {
