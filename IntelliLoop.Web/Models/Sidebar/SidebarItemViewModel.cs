@@ -1,6 +1,6 @@
 ﻿using IntelliLoop.Core.Entities.Enums;
 
-namespace IntelliLoop.Web.Models
+namespace IntelliLoop.Web.Models.Sidebar
 {
     public class SidebarItemViewModel
     {

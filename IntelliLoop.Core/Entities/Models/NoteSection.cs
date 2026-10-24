@@ -16,6 +16,6 @@ namespace IntelliLoop.Core.Entities.Models
 
         [ForeignKey(nameof(Lecture))]
         public Guid LectureId { get; set; }
-        public Lecture lecture { get; set; } = null!;
+        public Lecture Lecture { get; set; } = null!;
     }
 }

@@ -17,36 +17,41 @@ namespace IntelliLoop.Infrastructure.Data.Repositories
             await _context.Lectures.AddAsync(lecture);
         }
 
-        public async Task<bool> DeleteByIdAsync(Guid lectureId, Guid userId)
+        public void Delete(Lecture lecture)
         {
-            var userIdString = userId.ToString();
-
-            var lecture = await _context.Lectures
-                .Include(l => l.ProcessingJob)
-                .FirstOrDefaultAsync(l => l.Id == lectureId && l.UserId == userIdString);
-
-            if (lecture is null)
-            {
-                return false;
-            }
+            _context.Lectures.Remove(lecture);
 
             if (lecture.ProcessingJob is not null)
             {
                 _context.ProcessingJobs.Remove(lecture.ProcessingJob);
             }
-            _context.Lectures.Remove(lecture);
-
-            return true;
         }
 
-        public async Task<Lecture?> GetByIdAsync(Guid LectureId, Guid userId)
+        public async Task<Lecture?> GetByIdAsNoTrackingAsync(Guid lectureId, Guid userId)
         {
             var userIdString = userId.ToString();
 
             return await _context.Lectures
-                .AsNoTracking()
                 .Include(l => l.Notes)
-                .FirstOrDefaultAsync(l => l.Id == LectureId && l.UserId == userIdString);
+                .AsNoTracking()
+                .FirstOrDefaultAsync(l => l.Id == lectureId && l.UserId == userIdString);
+        }
+
+        public async Task<Lecture?> GetByIdAsync(Guid lectureId, Guid userId)
+        {
+            var userIdString = userId.ToString();
+
+            return await _context.Lectures
+                .Include(l => l.Notes)
+                .FirstOrDefaultAsync(l => l.Id == lectureId && l.UserId == userIdString);
+        }
+        public async Task<Lecture?> GetByIdForDeletionAsync(Guid lectureId, Guid userId)
+        {
+            var userIdString = userId.ToString();
+
+            return await _context.Lectures
+                .Include(l => l.ProcessingJob)
+                .FirstOrDefaultAsync(l => l.Id == lectureId && l.UserId == userIdString);
         }
     }
 }

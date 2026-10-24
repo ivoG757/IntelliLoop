@@ -4,7 +4,7 @@ using IntelliLoop.Core.Services;
 using IntelliLoop.Infrastructure.Data.Repositories;
 using IntelliLoop.Infrastructure.Services;
 
-namespace Microsoft.Extensions.DependencyInjection
+namespace IntelliLoop.Web.Extensions
 {
     public static class ApplicationServicesExtension
     {

@@ -1,10 +1,10 @@
 ﻿using IntelliLoop.Core.Contracts.Services;
 using IntelliLoop.Web.Mapping;
-using IntelliLoop.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using IntelliLoop.Common.Constants;
 using IntelliLoop.Core.DTOs.Request;
+using IntelliLoop.Web.Models.Sidebar;
 namespace IntelliLoop.Web.ViewComponents;
 
 public class SidebarViewComponent : ViewComponent

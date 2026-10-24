@@ -1,4 +1,4 @@
-﻿namespace IntelliLoop.Web.Models
+﻿namespace IntelliLoop.Web.Models.Processing
 {
     public class ProcessingJobViewModel
     {

@@ -6,6 +6,9 @@ using IntelliLoop.Core.DTOs.Response;
 using IntelliLoop.Core.Entities.Enums;
 using IntelliLoop.Core.Entities.Models;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
+using System.Numerics;
+using System.Reflection;
 using System.Threading.Channels;
 
 namespace IntelliLoop.Core.Services
@@ -48,7 +51,7 @@ namespace IntelliLoop.Core.Services
                 filePath = await _fileStorage.SaveAsync(file, fileName, userId);
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to save the uploaded file for user {UserId}.", userId);
                 throw;
@@ -67,7 +70,7 @@ namespace IntelliLoop.Core.Services
                 await _lectureProcessingRepository.AddJobAsync(job);
                 await _uof.SaveChangesAsync();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 await _fileStorage.Delete(filePath);
 
@@ -109,7 +112,7 @@ namespace IntelliLoop.Core.Services
 
             if (string.IsNullOrWhiteSpace(path) || !_fileStorage.Exists(path))
             {
-                _logger.LogWarning("Audio file for job {JobId} was not found.", 
+                _logger.LogWarning("Audio file for job {JobId} was not found.",
                     job.Id);
                 return null;
             }
@@ -127,9 +130,9 @@ namespace IntelliLoop.Core.Services
         public async Task<LectureResponseDto?> GetLectureAsync(LectureRequestDto request)
         {
             var lecture = await _lectureRepository
-                .GetByIdAsync(request.LectureId, request.UserId);
+                .GetByIdAsNoTrackingAsync(request.LectureId, request.UserId);
 
-            if(lecture is null)
+            if (lecture is null)
             {
                 return null;
             }
@@ -140,9 +143,10 @@ namespace IntelliLoop.Core.Services
                 Summary = lecture.Summary,
                 Concepts = lecture.Concepts,
                 Transcript = lecture.Transcript,
-                Notes = lecture.Notes.Select(n => 
+                Notes = lecture.Notes.Select(n =>
                 new NoteResponseDto
                 {
+                    Id = n.Id,
                     Title = n.Title,
                     Content = n.Content
                 }).ToList()
@@ -159,11 +163,120 @@ namespace IntelliLoop.Core.Services
 
         public async Task<bool> DeleteAsync(LectureRequestDto request)
         {
-            var isDeleted = await _lectureRepository.DeleteByIdAsync(request.LectureId, request.UserId);
+            var lecture = await _lectureRepository.GetByIdForDeletionAsync(request.LectureId, request.UserId);
 
-            await _uof.SaveChangesAsync();
+            if (lecture is null)
+            {
+                return false;
+            }
 
-            return isDeleted;
+            string audioFilePath = lecture.ProcessingJob.FilePath;
+
+            _lectureRepository.Delete(lecture);
+
+            try
+            {
+                await _uof.SaveChangesAsync();
+            }
+
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "A sudden error occured while deleting lecture");
+                return false;
+            }
+
+            try
+            {
+                await _fileStorage.Delete(audioFilePath);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "A sudden error occured while deleting audio file for lecture");
+                return false;
+            }
+
+            return true;
+        }
+        public async Task<bool> UpdateAsync(UpdateLectureRequestDto request)
+        {
+            Lecture? lecture = await _lectureRepository.GetByIdAsync(request.Id, request.UserId);
+
+            if (lecture is not null)
+            {
+                Dictionary<Guid, NoteSection> existing = new();
+
+                lecture.Title = request.Title;
+                lecture.Summary = request.Summary;
+                lecture.Concepts = request.Concepts;
+
+                var notesToAdd = new List<NoteSection>();
+
+                foreach (var note in lecture.Notes)
+                {
+                    existing[note.Id] = note;
+                }
+
+                foreach (var noteDto in request.Notes)
+                {
+                    if (noteDto.Id is null)
+                    {
+                        if(!string.IsNullOrWhiteSpace(noteDto.Title) || !string.IsNullOrWhiteSpace(noteDto.Content))
+                        {
+                            notesToAdd.Add(new NoteSection
+                            {
+                                Title = noteDto.Title,
+                                Content = noteDto.Content
+                            });
+                        }
+                        continue;
+                    }
+
+                    Guid currentKey = (Guid)noteDto.Id!;
+
+                    if (existing.ContainsKey(currentKey))
+                    {
+
+                        if (string.IsNullOrWhiteSpace(noteDto.Title) && string.IsNullOrWhiteSpace(noteDto.Content))
+                        {
+                            lecture.Notes.Remove(existing[currentKey]);
+                            existing.Remove(currentKey);
+                        }
+                        else
+                        {
+                            NoteSection noteToUpdate = existing[currentKey];
+                            noteToUpdate.Title = noteDto.Title;
+                            noteToUpdate.Content = noteDto.Content;
+                        }
+                    }
+                    else
+                    {
+                        return false; // TODO: pass result enumeration instead
+                    }
+                }
+
+                foreach (var note in notesToAdd)
+                {
+                    lecture.Notes.Add(note);
+                }
+            }
+
+            else
+            {
+                return false;
+            }
+
+            try
+            {
+                await _uof.SaveChangesAsync();
+            }
+
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "A sudden error occured while updating lecture");
+                return false;
+            }
+
+            return true;
         }
 
         private static JobResponseDto ToJobResponse(ProcessingJob job) => new()

@@ -1,4 +1,4 @@
-using IntelliLoop.Web.Models;
+using IntelliLoop.Web.Models.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;

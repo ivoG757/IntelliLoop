@@ -42,8 +42,18 @@ namespace IntelliLoop.Core.Contracts.Services
         /// <param name="request">The user and the lecture to delete.</param>
         /// <returns>
         /// true if the lecture was deleted; false if it doesn't exist,
-        /// belongs to another user, or is still processing.
+        /// belongs to another user.
         /// </returns>
         Task<bool> DeleteAsync(LectureRequestDto request);
+
+        /// <summary>
+        /// Updates a lecture that belongs to the user in the request.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns>
+        /// true if the lecture was updated; false if it doesn't exist,
+        /// belongs to another user.
+        /// </returns>
+        Task<bool> UpdateAsync(UpdateLectureRequestDto request);
     }
 }

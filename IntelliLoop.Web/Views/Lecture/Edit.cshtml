@@ -1,0 +1,84 @@
+﻿@model EditLectureViewModel
+@{
+    ViewData["Title"] = Model.Title;
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/edit.css" asp-append-version="true" />
+}
+
+<article class="document">
+    <form asp-controller="Lecture" asp-action="Edit" method="post">
+        <input asp-for="Id" type="hidden" />
+        <div class="document-kicker">
+            <i class="bi bi-book"></i>
+            Study notes
+            <span class="kicker-dot"></span>
+            Editing Lecture
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="Title" class="form-label">Lecture title</label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <section class="document-section">
+            <h2 class="section-title">Summary</h2>
+
+            <div class="body-copy">
+                <label asp-for="Summary" class="form-label">Summary</label>
+                <textarea asp-for="Summary" class="form-control"></textarea>
+                <span asp-validation-for="Summary" class="text-danger"></span>
+            </div>
+        </section>
+
+        <section class="document-section">
+            <h2 class="section-title">Key Concepts</h2>
+            @for (int i = 0; i < Model.KeyConcepts.Count; i++)
+            {
+                <div class="mb-2">
+                    <input asp-for="KeyConcepts[i]" class="form-control" />
+                    <span asp-validation-for="KeyConcepts[i]" class="text-danger"></span>
+                </div>
+            }
+        </section>
+
+        <section class="document-section">
+            <h2 class="section-title">Notes</h2>
+
+            <div class="notes-list">
+                @for (int i = 0; i < Model.Notes.Count; i++)
+                {
+                    <input asp-for="Notes[i].Id" type="hidden" />
+
+                    <div class="mb-2">
+                        <input asp-for="Notes[i].Title"
+                               class="form-control" />
+                        <span asp-validation-for="Notes[i].Title"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-2">
+                        <textarea asp-for="Notes[i].Content"
+                                  class="form-control"></textarea>
+                        <span asp-validation-for="Notes[i].Content"
+                              class="text-danger"></span>
+                    </div>
+                }
+            </div>
+        </section>
+        <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-lg"></i>
+                Save
+            </button>
+
+            <a asp-action="Details" asp-route-id="@Model.Id"
+               class="btn btn-outline-secondary">
+                Cancel
+            </a>
+        </div>
+    </form>
+</article>

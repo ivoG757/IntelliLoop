@@ -4,8 +4,10 @@ using IntelliLoop.Core.DTOs.Request;
 using IntelliLoop.Core.DTOs.Response;
 using IntelliLoop.Core.Entities.Enums;
 using IntelliLoop.Web.Mapping;
-using IntelliLoop.Web.Models;
+using IntelliLoop.Web.Models.Lecture;
+using IntelliLoop.Web.Models.Processing;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
 
 namespace IntelliLoop.Web.Controllers
 {
@@ -163,6 +165,67 @@ namespace IntelliLoop.Web.Controllers
             var isDeleted = await _lectureService.DeleteAsync(request);
 
             if (!isDeleted)
+            {
+                return NotFound();
+            }
+
+            return RedirectToAction(nameof(Upload));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit([FromRoute] Guid id)
+        {
+            LectureResponseDto? lecture = await _lectureService
+                .GetLectureAsync(BuildLectureRequest(id));
+
+            if (lecture is null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new EditLectureViewModel
+            {
+                Title = lecture.Title,
+                Summary = lecture.Summary,
+                KeyConcepts = lecture.Concepts.ToList(),
+                Notes = lecture.Notes.Select(n => new EditNoteViewModel
+                {
+                    Id = n.Id,
+                    Title = n.Title,
+                    Content = n.Content
+                }).ToList(),
+                Id = id
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditLectureViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var request = new UpdateLectureRequestDto
+            {
+                Id = model.Id,
+                Title = model.Title,
+                UserId = GetUserId(),
+                Summary = model.Summary,
+                Concepts = model.KeyConcepts,
+                Notes = model.Notes.Select(n => new UpdateNotesRequestDto
+                {
+                    Id = n.Id,
+                    Title = n.Title,
+                    Content = n.Content
+                }).ToList()
+            };
+
+            var isSaved = await _lectureService.UpdateAsync(request);
+            
+            if(!isSaved)
             {
                 return NotFound();
             }
