@@ -36,35 +36,62 @@
 
         <section class="document-section">
             <h2 class="section-title">Key Concepts</h2>
-            @for (int i = 0; i < Model.KeyConcepts.Count; i++)
-            {
-                <div class="mb-2">
-                    <input asp-for="KeyConcepts[i]" class="form-control" />
-                    <span asp-validation-for="KeyConcepts[i]" class="text-danger"></span>
-                </div>
-            }
+
+            <button type="button" id="add-concept" class="btn btn-outline-primary mb-3">
+                <i class="bi bi-plus-lg"></i>
+                Add concept
+            </button>
+
+            <div id="concept-list">
+                @for (int i = 0; i < Model.KeyConcepts.Count; i++)
+                {
+                    <div class="concept-item mb-3">
+                        <div class="mb-3">
+                            <input asp-for="KeyConcepts[i]" class="form-control" />
+                            <span asp-validation-for="KeyConcepts[i]" class="text-danger"></span>
+                        </div>
+
+                        <button type="button" class="btn btn-outline-danger delete-concept">
+                            <i class="bi bi-trash"></i>
+                            Delete concept
+                        </button>
+                    </div>
+                }
+            </div>
         </section>
 
         <section class="document-section">
             <h2 class="section-title">Notes</h2>
 
+            <button type="button" id="add-note" class="btn btn-outline-primary mb-3">
+                <i class="bi bi-plus-lg"></i>
+                Add note
+            </button>
+
             <div class="notes-list">
                 @for (int i = 0; i < Model.Notes.Count; i++)
                 {
-                    <input asp-for="Notes[i].Id" type="hidden" />
+                    <div class="note-item mb-4">
+                        <input asp-for="Notes[i].Id" type="hidden" />
 
-                    <div class="mb-2">
-                        <input asp-for="Notes[i].Title"
-                               class="form-control" />
-                        <span asp-validation-for="Notes[i].Title"
-                              class="text-danger"></span>
-                    </div>
+                        <div class="mb-2">
+                            <input asp-for="Notes[i].Title"
+                                   class="form-control" />
+                            <span asp-validation-for="Notes[i].Title"
+                                  class="text-danger"></span>
+                        </div>
 
-                    <div class="mb-2">
-                        <textarea asp-for="Notes[i].Content"
-                                  class="form-control"></textarea>
-                        <span asp-validation-for="Notes[i].Content"
-                              class="text-danger"></span>
+                        <div class="mb-2">
+                            <textarea asp-for="Notes[i].Content"
+                                      class="form-control"></textarea>
+                            <span asp-validation-for="Notes[i].Content"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <button type="button" class="btn btn-outline-danger delete-note">
+                            <i class="bi bi-trash"></i>
+                            Delete note
+                        </button>
                     </div>
                 }
             </div>
@@ -75,10 +102,14 @@
                 Save
             </button>
 
-            <a asp-action="Details" asp-route-id="@Model.Id"
+            <a asp-action="Index" asp-route-id="@Model.Id"
                class="btn btn-outline-secondary">
                 Cancel
             </a>
         </div>
     </form>
 </article>
+
+@section Scripts {
+    <script src="~/js/edit.js" asp-append-version="true"></script>
+}
