@@ -11,6 +11,7 @@
 <article class="document">
     <form asp-controller="Lecture" asp-action="Edit" method="post">
         <input asp-for="Id" type="hidden" />
+
         <div class="document-kicker">
             <i class="bi bi-book"></i>
             Study notes
@@ -18,85 +19,98 @@
             Editing Lecture
         </div>
 
-        <div class="mb-4">
-            <label asp-for="Title" class="form-label">Lecture title</label>
-            <input asp-for="Title" class="form-control" />
-            <span asp-validation-for="Title" class="text-danger"></span>
+        <label asp-for="Title" class="visually-hidden">Lecture title</label>
+        <h1>
+            <textarea asp-for="Title" class="edit-field" rows="1" data-single-line></textarea>
+        </h1>
+        <span asp-validation-for="Title" class="text-danger field-error"></span>
+
+        <div class="document-subtitle">
+            <i class="bi bi-clock"></i>
+            Lecture recording
+        </div>
+
+        <div class="audio-player">
+            <div class="player-info">
+                <span class="player-label">Original lecture audio</span>
+                <audio class="audio-controls" controls preload="metadata">
+                    <source src="@Url.Action("Audio", "Lecture", new { id = Model.Id })" type="audio/wav">
+                    Your browser does not support audio playback.
+                </audio>
+            </div>
         </div>
 
         <section class="document-section">
             <h2 class="section-title">Summary</h2>
 
             <div class="body-copy">
-                <label asp-for="Summary" class="form-label">Summary</label>
-                <textarea asp-for="Summary" class="form-control"></textarea>
-                <span asp-validation-for="Summary" class="text-danger"></span>
+                <label asp-for="Summary" class="visually-hidden">Summary</label>
+                <textarea asp-for="Summary" class="edit-field" rows="1"></textarea>
+                <span asp-validation-for="Summary" class="text-danger field-error"></span>
             </div>
         </section>
 
         <section class="document-section">
             <h2 class="section-title">Key Concepts</h2>
 
-            <button type="button" id="add-concept" class="btn btn-outline-primary mb-3">
+            <button type="button" id="add-concept" class="add-btn">
                 <i class="bi bi-plus-lg"></i>
                 Add concept
             </button>
 
-            <div id="concept-list">
+            <ul class="concept-list" id="concept-list">
                 @for (int i = 0; i < Model.KeyConcepts.Count; i++)
                 {
-                    <div class="concept-item mb-3">
-                        <div class="mb-3">
-                            <input asp-for="KeyConcepts[i]" class="form-control" />
-                            <span asp-validation-for="KeyConcepts[i]" class="text-danger"></span>
+                    <li class="concept-item">
+                        <span class="concept-bullet"></span>
+                        <div>
+                            <textarea asp-for="KeyConcepts[i]" class="edit-field" rows="1" data-single-line></textarea>
+                            <span asp-validation-for="KeyConcepts[i]" class="text-danger field-error"></span>
                         </div>
 
-                        <button type="button" class="btn btn-outline-danger delete-concept">
+                        <button type="button" class="row-action delete-concept" aria-label="Delete concept" title="Delete concept">
                             <i class="bi bi-trash"></i>
-                            Delete concept
                         </button>
-                    </div>
+                    </li>
                 }
-            </div>
+            </ul>
         </section>
 
         <section class="document-section">
             <h2 class="section-title">Notes</h2>
 
-            <button type="button" id="add-note" class="btn btn-outline-primary mb-3">
+            <button type="button" id="add-note" class="add-btn">
                 <i class="bi bi-plus-lg"></i>
                 Add note
             </button>
 
-            <div class="notes-list">
+            <ol class="notes-list">
                 @for (int i = 0; i < Model.Notes.Count; i++)
                 {
-                    <div class="note-item mb-4">
+                    <li class="note-item @(Model.Notes[i].Id == null ? "note-new" : "")">
                         <input asp-for="Notes[i].Id" type="hidden" />
 
-                        <div class="mb-2">
-                            <input asp-for="Notes[i].Title"
-                                   class="form-control" />
-                            <span asp-validation-for="Notes[i].Title"
-                                  class="text-danger"></span>
+                        <div class="note-field">
+                            <label asp-for="Notes[i].Title" class="note-label">Title:</label>
+                            <textarea asp-for="Notes[i].Title" class="edit-field note-title" rows="1" data-single-line></textarea>
                         </div>
+                        <span asp-validation-for="Notes[i].Title" class="text-danger field-error"></span>
 
-                        <div class="mb-2">
-                            <textarea asp-for="Notes[i].Content"
-                                      class="form-control"></textarea>
-                            <span asp-validation-for="Notes[i].Content"
-                                  class="text-danger"></span>
+                        <div class="note-field">
+                            <label asp-for="Notes[i].Content" class="note-label">Content:</label>
+                            <textarea asp-for="Notes[i].Content" class="edit-field" rows="1"></textarea>
                         </div>
+                        <span asp-validation-for="Notes[i].Content" class="text-danger field-error"></span>
 
-                        <button type="button" class="btn btn-outline-danger delete-note">
+                        <button type="button" class="row-action delete-note" aria-label="Delete note" title="Delete note">
                             <i class="bi bi-trash"></i>
-                            Delete note
                         </button>
-                    </div>
+                    </li>
                 }
-            </div>
+            </ol>
         </section>
-        <div class="mt-4 d-flex gap-2">
+
+        <div class="edit-actions">
             <button type="submit" class="btn btn-primary">
                 <i class="bi bi-check-lg"></i>
                 Save

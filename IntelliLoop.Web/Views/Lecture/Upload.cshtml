@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Lecture generation";
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
 }
@@ -25,10 +24,14 @@
             <input type="file" class="form-control" id="file" name="file" accept="audio/*" required />
         </div>
 
-        <button type="submit" class="btn primary-btn">
+        <button type="submit" class="primary-btn">
             Process Lecture
         </button>
     </form>
 
     <span class="file-hint">MP3 · WAV · M4A</span>
 </section>
+
+@section Scripts {
+    <script src="~/js/upload.js" asp-append-version="true"></script>
+}

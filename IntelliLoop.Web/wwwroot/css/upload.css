@@ -50,9 +50,24 @@
     box-shadow: 0 1px 2px var(--shadow);
 }
 
-    .primary-btn:hover {
+    .primary-btn:hover:not(:disabled) {
         opacity: .85;
     }
+
+    .primary-btn:disabled {
+        opacity: .6;
+        cursor: not-allowed;
+    }
+
+.validation-summary-valid {
+    display: none;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
 
 .file-hint {
     margin-top: 14px;

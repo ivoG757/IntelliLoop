@@ -1,4 +1,5 @@
-﻿using IntelliLoop.Common.Constants;
+﻿using Azure;
+using IntelliLoop.Common.Constants;
 using IntelliLoop.Core.Contracts.Services;
 using IntelliLoop.Core.DTOs.Request;
 using IntelliLoop.Core.DTOs.Response;
@@ -7,7 +8,6 @@ using IntelliLoop.Web.Mapping;
 using IntelliLoop.Web.Models.Lecture;
 using IntelliLoop.Web.Models.Processing;
 using Microsoft.AspNetCore.Mvc;
-using System.Reflection;
 
 namespace IntelliLoop.Web.Controllers
 {
@@ -24,7 +24,7 @@ namespace IntelliLoop.Web.Controllers
             LectureResponseDto? lecture = await _lectureService
                 .GetLectureAsync(BuildLectureRequest(id));
 
-            if(lecture is null)
+            if (lecture is null)
             {
                 return NotFound();
             }
@@ -130,7 +130,7 @@ namespace IntelliLoop.Web.Controllers
                 return View("Error"); //TODO: Add an actual Error page with retry
             }
 
-            if(response.Status != LectureGenerationStatus.Completed)
+            if (response.Status != LectureGenerationStatus.Completed)
             {
                 return View(BuildProcessingViewModel(response));
             }
@@ -143,7 +143,7 @@ namespace IntelliLoop.Web.Controllers
         {
             LectureResponseDto? lecture = await _lectureService.GetLectureAsync(BuildLectureRequest(id));
 
-            if(lecture is null)
+            if (lecture is null)
             {
                 return NotFound();
             }
@@ -224,13 +224,13 @@ namespace IntelliLoop.Web.Controllers
             };
 
             var isSaved = await _lectureService.UpdateAsync(request);
-            
-            if(!isSaved)
+
+            if (!isSaved)
             {
                 return NotFound();
             }
 
-            return RedirectToAction(nameof(Upload));
+            return RedirectToAction(nameof(Index), new { id = model.Id });
         }
 
         private LectureRequestDto BuildLectureRequest(Guid lectureId) =>
