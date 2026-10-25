@@ -12,7 +12,7 @@ namespace IntelliLoop.Web.Controllers
         {
             if(IsUserAuthenticated())
             {
-                return RedirectToAction(nameof(LectureController.Upload), "Lecture");
+                return RedirectToAction(nameof(ProcessingController.Upload), "Processing");
             }
 
             return View();

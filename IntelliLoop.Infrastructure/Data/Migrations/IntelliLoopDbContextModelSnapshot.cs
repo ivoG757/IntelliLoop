@@ -30,15 +30,18 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
 
                     b.PrimitiveCollection<string>("Concepts")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
 
                     b.Property<string>("Summary")
                         .IsRequired()
+                        .HasMaxLength(100000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("Transcript")
                         .IsRequired()
@@ -63,6 +66,7 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
+                        .HasMaxLength(1000000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("LectureId")
@@ -70,7 +74,8 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("Id");
 
@@ -91,8 +96,8 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ErrorMessage")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("FailedAtStage")
+                        .HasColumnType("int");
 
                     b.Property<string>("FilePath")
                         .IsRequired()
@@ -351,13 +356,13 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("IntelliLoop.Core.Entities.Models.NoteSection", b =>
                 {
-                    b.HasOne("IntelliLoop.Core.Entities.Models.Lecture", "lecture")
+                    b.HasOne("IntelliLoop.Core.Entities.Models.Lecture", "Lecture")
                         .WithMany("Notes")
                         .HasForeignKey("LectureId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("lecture");
+                    b.Navigation("Lecture");
                 });
 
             modelBuilder.Entity("IntelliLoop.Core.Entities.Models.ProcessingJob", b =>

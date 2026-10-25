@@ -2,6 +2,6 @@
 {
     public interface ILectureProcessingService
     {
-        public Task ProcessLectureAsync(Guid jobId);
+        public Task ProcessLectureAsync(Guid jobId, CancellationToken token);
     }
 }

@@ -35,7 +35,7 @@ namespace IntelliLoop.Infrastructure.Services
             _whisperFactory?.Dispose();
         }
 
-        public async Task<string> TranscribeAudioAsync(string audioFilePath)
+        public async Task<string> TranscribeAudioAsync(string audioFilePath, CancellationToken token)
         {
             if (!File.Exists(audioFilePath))
             {
@@ -59,9 +59,9 @@ namespace IntelliLoop.Infrastructure.Services
 
                 var transcript = new StringBuilder();
 
-                await foreach (var result in _processor.ProcessAsync(fileStream))
+                await foreach (var result in _processor.ProcessAsync(fileStream, token))
                 {
-                    var text = $"{result.Start}->{result.End}: {result.Text}"; //TODO: Add timestamp formatting, also add it to constants
+                    var text = $"{result.Text}";
 
                     transcript.AppendLine(text);
                 }

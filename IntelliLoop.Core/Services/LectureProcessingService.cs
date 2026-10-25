@@ -1,5 +1,4 @@
-﻿using IntelliLoop.Common.Constants;
-using IntelliLoop.Core.Contracts.Repositories;
+﻿using IntelliLoop.Core.Contracts.Repositories;
 using IntelliLoop.Core.Contracts.Services;
 using IntelliLoop.Core.DTOs;
 using IntelliLoop.Core.Entities.Enums;
@@ -31,45 +30,66 @@ namespace IntelliLoop.Core.Services
             _lectureRepository = lectureRepository;
             _uof = uof;
         }
-        //TODO: Add error handling and logging for each step of the process.
-        //Think of a way to represent the error in the ProcessingJob entity so that the user can see what went wrong if the job fails.
-        //Also, consider adding a retry mechanism for transient errors.
 
-        public async Task ProcessLectureAsync(Guid jobId)
+        public async Task ProcessLectureAsync(Guid jobId, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Processing lecture generation job with ID: {jobId}");
+            _logger.LogInformation("Processing lecture generation job with ID: {JobId}", jobId);
 
             var job = await _lectureProcessingRepository.GetJobByIdAsync(jobId);
 
             if (job == null)
             {
-                _logger.LogError($"Lecture generation job with ID: {jobId} not found.");
+                _logger.LogError("Lecture generation job with ID: {JobId} not found.", jobId);
                 return;
             }
 
+            job.StartedAt = DateTime.UtcNow;
+            var transcript = string.Empty;
             job.Status = LectureGenerationStatus.Transcribing;
 
-            job.StartedAt = DateTime.UtcNow;
-
             await _uof.SaveChangesAsync();
 
-            _logger.LogInformation($"Transcribing lecture generation job with ID: {jobId}");
-            string transcript = await _transcriptionService.TranscribeAudioAsync(job.FilePath);
-
+            try
+            {
+                _logger.LogInformation("Transcribing lecture for generation job with ID: {JobId}", jobId);
+                transcript = await _transcriptionService.TranscribeAudioAsync(job.FilePath, cancellationToken);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Failed lecture transcription for generation job with ID: {JobId}", jobId);
+                job.Status = LectureGenerationStatus.Failed;
+                job.FailedAtStage = LectureGenerationStatus.Transcribing;
+                await _uof.SaveChangesAsync();
+                return;
+            }
             job.Status = LectureGenerationStatus.Extracting;
-
             await _uof.SaveChangesAsync();
 
-            LectureAnalysis summary = await _llmService.AnalyzeLectureAsync(transcript);
-
-            _logger.LogInformation($"Extracting lecture generation job with ID: {jobId}");
+            LectureAnalysis summary = new();
+            try
+            {
+                _logger.LogInformation("Extracting lecture generation job with ID: {JobId}", jobId);
+                summary = await _llmService.AnalyzeLectureAsync(transcript, cancellationToken);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Failed lecture extraction for generation job with ID: {JobiId}", jobId);
+                job.Status = LectureGenerationStatus.Failed;
+                job.FailedAtStage = LectureGenerationStatus.Extracting;
+                await _uof.SaveChangesAsync();
+                return;
+            }
 
             var lecture = new Lecture
             {
                 Title = summary.Title,
                 Summary = summary.Summary,
                 Concepts = summary.KeyConcepts,
-                Notes = summary.Notes,
+                Notes = summary.Notes.Select(n => new NoteSection
+                {
+                    Title = n.Title,
+                    Content = n.Content
+                }).ToList(),
                 Transcript = transcript,
                 ProcessingJob = job,
                 UserId = job.UserId
@@ -81,69 +101,28 @@ namespace IntelliLoop.Core.Services
 
             job.CompletedAt = DateTime.UtcNow;
 
-            Console.WriteLine("DEBUG 1: Before final SaveChanges");
             try
             {
                 await _uof.SaveChangesAsync();
-                Console.WriteLine("DEBUG 2: Final SaveChanges completed");
             }
-            catch(Exception ex)
+
+            catch (Exception ex)
             {
-                Console.WriteLine($"DEBUG ERROR: {ex}");
-                throw;
+                _logger.LogError(ex, "Failed to save generated lecture for job {JobId}", jobId);
+
+                job.Status = LectureGenerationStatus.Failed;
+                job.FailedAtStage = LectureGenerationStatus.Extracting;
+                job.CompletedAt = null;
+
+                await _uof.SaveChangesAsync();
+                return;
             }
-            Console.WriteLine("DEBUG 3: After final SaveChanges");
 
             //testing - remove later
             Console.WriteLine($"{lecture.Title}\n{lecture.Summary}\n{summary.KeyConcepts}\n{summary.Notes}");
 
-            _logger.LogInformation($"Completed lecture generation job with ID: {jobId}");
+            _logger.LogInformation("Completed lecture generation job with ID: {JobId}", jobId);
 
-        }
-
-        //TODO: validate the uploaded audio file before saving it to the storage.
-        private static void ValidateAudioUpload(Stream file, string fileName)
-        {
-            ArgumentNullException.ThrowIfNull(file);
-
-            if (!file.CanRead)
-            {
-                throw new ArgumentException(
-                    "The uploaded file cannot be read.", nameof(file));
-            }
-
-            if (string.IsNullOrWhiteSpace(fileName))
-            {
-                throw new ArgumentException(
-                    "A file name is required.", nameof(fileName));
-            }
-
-            var extension = Path.GetExtension(fileName);
-
-            if (!AudioConstants.AllowedAudioExtensions.Contains(extension))
-            {
-                throw new InvalidDataException(
-                    "Unsupported file type. Upload an MP3, WAV, M4A, OGG, or WebM file.");
-            }
-
-            if (!file.CanSeek)
-            {
-                throw new InvalidOperationException(
-                    "The upload stream must support seeking to validate its size.");
-            }
-
-            if (file.Length == 0)
-            {
-                throw new InvalidDataException("The uploaded file is empty.");
-            }
-
-            if (file.Length > AudioConstants.MaxAudioFileSizeBytes)
-            {
-                throw new InvalidDataException(
-                    "The audio file cannot exceed 100 MB.");
-            }
-
-            file.Position = 0;
         }
     }
 }

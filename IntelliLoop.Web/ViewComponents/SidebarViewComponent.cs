@@ -2,9 +2,11 @@
 using IntelliLoop.Web.Mapping;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using IntelliLoop.Common.Constants;
+using static IntelliLoop.Web.Common.ApplicationConstants;
+using static IntelliLoop.Common.Constants.AccountConstants;
 using IntelliLoop.Core.DTOs.Request;
 using IntelliLoop.Web.Models.Sidebar;
+
 namespace IntelliLoop.Web.ViewComponents;
 
 public class SidebarViewComponent : ViewComponent
@@ -34,7 +36,7 @@ public class SidebarViewComponent : ViewComponent
         var request = new JobListRequestDto()
         {
             UserId = userId,
-            Take = ApplicationConstants.Take,
+            Take = Take,
             Skip = 0
         };
 
@@ -54,7 +56,7 @@ public class SidebarViewComponent : ViewComponent
         SidebarViewModel model = new SidebarViewModel
         {
             UserEmail = UserClaimsPrincipal
-            .FindFirstValue(ClaimTypes.Email) ?? AccountConstants.DefaultUser,
+            .FindFirstValue(ClaimTypes.Email) ?? DefaultUser,
 
             Lectures = sidebarItems
         };

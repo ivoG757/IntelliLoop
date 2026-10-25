@@ -1,14 +1,12 @@
 ﻿using IntelliLoop.Common.Constants;
 using IntelliLoop.Core.Contracts.Repositories;
 using IntelliLoop.Core.Contracts.Services;
+using IntelliLoop.Core.DTOs;
 using IntelliLoop.Core.DTOs.Request;
 using IntelliLoop.Core.DTOs.Response;
 using IntelliLoop.Core.Entities.Enums;
 using IntelliLoop.Core.Entities.Models;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations;
-using System.Numerics;
-using System.Reflection;
 using System.Threading.Channels;
 
 namespace IntelliLoop.Core.Services
@@ -161,13 +159,13 @@ namespace IntelliLoop.Core.Services
             return processingJobs.Select(ToJobResponse).ToList();
         }
 
-        public async Task<bool> DeleteAsync(LectureRequestDto request)
+        public async Task<LectureOperationResult> DeleteAsync(LectureRequestDto request)
         {
             var lecture = await _lectureRepository.GetByIdForDeletionAsync(request.LectureId, request.UserId);
 
             if (lecture is null)
             {
-                return false;
+                return LectureOperationResult.NotFound;
             }
 
             string audioFilePath = lecture.ProcessingJob.FilePath;
@@ -182,7 +180,7 @@ namespace IntelliLoop.Core.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "A sudden error occured while deleting lecture");
-                return false;
+                return LectureOperationResult.Failed;
             }
 
             try
@@ -192,12 +190,12 @@ namespace IntelliLoop.Core.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "A sudden error occured while deleting audio file for lecture");
-                return false;
+                return LectureOperationResult.Failed;
             }
 
-            return true;
+            return LectureOperationResult.Success;
         }
-        public async Task<bool> UpdateAsync(UpdateLectureRequestDto request)
+        public async Task<LectureOperationResult> UpdateAsync(UpdateLectureRequestDto request)
         {
             Lecture? lecture = await _lectureRepository.GetByIdAsync(request.Id, request.UserId);
 
@@ -250,7 +248,7 @@ namespace IntelliLoop.Core.Services
                     }
                     else
                     {
-                        return false; // TODO: pass result enumeration instead
+                        return LectureOperationResult.NotFound;
                     }
                 }
 
@@ -262,7 +260,7 @@ namespace IntelliLoop.Core.Services
 
             else
             {
-                return false;
+                return LectureOperationResult.NotFound;
             }
 
             try
@@ -273,10 +271,10 @@ namespace IntelliLoop.Core.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "A sudden error occured while updating lecture");
-                return false;
+                return LectureOperationResult.Failed;
             }
 
-            return true;
+            return LectureOperationResult.Success;
         }
 
         private static JobResponseDto ToJobResponse(ProcessingJob job) => new()

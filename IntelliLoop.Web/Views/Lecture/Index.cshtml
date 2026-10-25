@@ -31,11 +31,6 @@
         </div>
     </div>
 
-    <a asp-controller="Lecture" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary my-0">
-        <i class="bi bi-pencil-square"></i>
-        Edit lecture
-    </a>
-
     <section class="document-section">
         <h2 class="section-title">Summary</h2>
 
@@ -73,6 +68,11 @@
             }
         </ol>
     </section>
+
+    <a asp-controller="Lecture" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary my-3">
+        <i class="bi bi-pencil-square"></i>
+        Edit
+    </a>
 
     <details class="transcript">
         <summary>

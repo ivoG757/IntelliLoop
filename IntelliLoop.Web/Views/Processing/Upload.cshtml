@@ -18,7 +18,7 @@
         Upload an audio recording and IntelliLoop will create structured study notes.
     </p>
 
-    <form asp-controller="Lecture" asp-action="Upload" method="post" enctype="multipart/form-data">
+    <form asp-controller="Processing" asp-action="Upload" method="post" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="file" class="form-label">Lecture audio</label>
             <input type="file" class="form-control" id="file" name="file" accept="audio/*" required />

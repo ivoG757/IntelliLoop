@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-
+using static IntelliLoop.Common.Constants.ValidationConstants.Lecture;
 namespace IntelliLoop.Web.Models.Lecture
 {
     public class EditLectureViewModel
@@ -7,10 +7,14 @@ namespace IntelliLoop.Web.Models.Lecture
         public Guid Id { get; set; }
 
         [Required]
+        [StringLength(TitleMaxLength)]
         public string Title { get; set; } = null!;
 
         [Required]
+        [StringLength(SummaryMaxLength)]
         public string Summary { get; set; } = null!;
+
+        [StringLength(ConceptMaxLength)]
         public List<string> KeyConcepts { get; set; } = new List<string>();
         public List<EditNoteViewModel> Notes { get; set; } = new List<EditNoteViewModel>();
     }

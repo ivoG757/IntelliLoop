@@ -21,12 +21,12 @@ namespace IntelliLoop.Infrastructure.Services
             _scopeFactory = serviceScopeFactory;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
 
             _logger.LogInformation("Lecture generation worker started.");
 
-            while (await _channel.Reader.WaitToReadAsync(stoppingToken))
+            while (await _channel.Reader.WaitToReadAsync(cancellationToken))
             {
                 while (_channel.Reader.TryRead(out var jobId))
                 {
@@ -34,11 +34,11 @@ namespace IntelliLoop.Infrastructure.Services
                     {
                         using var scope = _scopeFactory.CreateScope();
                         var lectureProcessingService = scope.ServiceProvider.GetRequiredService<ILectureProcessingService>();
-                        await lectureProcessingService.ProcessLectureAsync(jobId);
+                        await lectureProcessingService.ProcessLectureAsync(jobId, cancellationToken);
                     }
                     catch (OperationCanceledException)
                     {
-                        break;
+                        throw;
                     }
                     catch (Exception ex)
                     {

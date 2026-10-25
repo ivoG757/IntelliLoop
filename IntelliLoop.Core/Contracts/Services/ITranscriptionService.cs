@@ -2,6 +2,6 @@
 {
     public interface ITranscriptionService
     {
-        public Task<string> TranscribeAudioAsync(string audioFilePath);
+        public Task<string> TranscribeAudioAsync(string audioFilePath, CancellationToken token);
     }
 }

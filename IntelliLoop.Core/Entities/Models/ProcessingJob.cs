@@ -10,7 +10,7 @@ namespace IntelliLoop.Core.Entities.Models
         public Guid Id { get; set; }
         public string FilePath { get; set; } = null!;
         public LectureGenerationStatus Status { get; set; }
-        public string? ErrorMessage { get; set; }
+        public LectureGenerationStatus? FailedAtStage { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime StartedAt { get; set; }
         public DateTime? CompletedAt { get; set; }

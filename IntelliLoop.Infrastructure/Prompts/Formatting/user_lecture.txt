@@ -1,3 +1,11 @@
-Organize the following extracted lecture information into the requested study structure.
+Organize the following extracted educational information into a
+LectureAnalysis result.
 
-EXTRACTED INFORMATION:
+The goal is to produce study material that helps a student understand
+the lecture, not merely a shorter version of the transcript.
+
+Use the extracted information as the source of truth. Preserve important
+details and examples, remove redundancy, and ensure that the summary,
+key concepts, and notes serve distinct purposes.
+
+EXTRACTED EDUCATIONAL INFORMATION:

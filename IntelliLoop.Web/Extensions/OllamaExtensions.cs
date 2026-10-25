@@ -1,5 +1,5 @@
 ﻿using IntelliLoop.Core.Contracts.Services;
-using IntelliLoop.Core.Services;
+using IntelliLoop.Infrastructure.Services;
 using OllamaSharp;
 
 namespace IntelliLoop.Web.Extensions
@@ -20,7 +20,7 @@ namespace IntelliLoop.Web.Extensions
             };
 
             services.AddChatClient(ollamaClient);
-            services.AddScoped<ILlmService, FakeLlmService>(); //REMINDER: Add the real LLM service implementation later
+            services.AddScoped<ILlmService, LocalLlmService>();
 
             return services;
         }

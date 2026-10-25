@@ -1,4 +1,5 @@
-﻿using IntelliLoop.Core.DTOs.Request;
+﻿using IntelliLoop.Core.DTOs;
+using IntelliLoop.Core.DTOs.Request;
 using IntelliLoop.Core.DTOs.Response;
 namespace IntelliLoop.Core.Contracts.Services
 {
@@ -44,7 +45,7 @@ namespace IntelliLoop.Core.Contracts.Services
         /// true if the lecture was deleted; false if it doesn't exist,
         /// belongs to another user.
         /// </returns>
-        Task<bool> DeleteAsync(LectureRequestDto request);
+        Task<LectureOperationResult> DeleteAsync(LectureRequestDto request);
 
         /// <summary>
         /// Updates a lecture that belongs to the user in the request.
@@ -54,6 +55,6 @@ namespace IntelliLoop.Core.Contracts.Services
         /// true if the lecture was updated; false if it doesn't exist,
         /// belongs to another user.
         /// </returns>
-        Task<bool> UpdateAsync(UpdateLectureRequestDto request);
+        Task<LectureOperationResult> UpdateAsync(UpdateLectureRequestDto request);
     }
 }

@@ -1,3 +1,11 @@
-Extract the educational information from the following lecture transcript.
+Extract the educational information from the complete lecture transcript
+provided below.
+
+Preserve the information needed to explain the subject accurately,
+including important technical details, procedures, examples, code,
+demonstration results, and distinctions between concepts.
+
+Do not create the final study material. Extract and organize the source
+information for the next processing stage.
 
 LECTURE TRANSCRIPT:
