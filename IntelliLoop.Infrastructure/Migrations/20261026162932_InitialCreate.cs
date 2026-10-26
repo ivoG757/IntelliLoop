@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace IntelliLoop.Infrastructure.Data.Migrations
+namespace IntelliLoop.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class DeleteBehaviourChanged : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

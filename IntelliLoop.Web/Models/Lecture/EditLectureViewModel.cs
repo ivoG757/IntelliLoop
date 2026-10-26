@@ -7,14 +7,14 @@ namespace IntelliLoop.Web.Models.Lecture
         public Guid Id { get; set; }
 
         [Required]
-        [StringLength(TitleMaxLength)]
+        [MaxLength(TitleMaxLength)]
         public string Title { get; set; } = null!;
 
         [Required]
-        [StringLength(SummaryMaxLength)]
+        [MaxLength(SummaryMaxLength)]
         public string Summary { get; set; } = null!;
 
-        [MaxLength(ConceptMaxLength)]
+        [MaxLength(ConceptTextMaxLength)]
         public List<string> KeyConcepts { get; set; } = new List<string>();
         public List<EditNoteViewModel> Notes { get; set; } = new List<EditNoteViewModel>();
     }

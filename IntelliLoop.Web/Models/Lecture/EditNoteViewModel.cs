@@ -6,10 +6,10 @@ namespace IntelliLoop.Web.Models.Lecture
     {
         public Guid? Id { get; set; }
 
-        [StringLength(TitleMaxLength)]
+        [MaxLength(TitleMaxLength)]
         public string? Title { get; set; }
 
-        [StringLength(ContentMaxLength)]
+        [MaxLength(ContentMaxLength)]
         public string? Content { get; set; }
 
     }

@@ -12,7 +12,7 @@ namespace IntelliLoop.Core.DTOs
         [MaxLength(SummaryMaxLength)]
         public string Summary { get; set; } = string.Empty;
 
-        [MaxLength(ConceptMaxLength)]
+        [MaxLength(ConceptTextMaxLength)]
         public List<string> KeyConcepts { get; set; } = new();
         public List<NoteAnalysis> Notes { get; set; } = new();
     }

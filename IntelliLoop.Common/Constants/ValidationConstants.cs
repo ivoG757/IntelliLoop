@@ -6,14 +6,15 @@
         {
             public const int TitleMaxLength = 150;
             public const int SummaryMaxLength = 10000;
-            public const int TranscriptMaxLength = 2000000;
-            public const int ConceptMaxLength = 2000;
+            public const int TranscriptMaxLength = 60000;
+            public const int MaxConceptCount = 30;
+            public const int ConceptTextMaxLength = 200;
         }
 
         public static class NoteSection
         {
             public const int TitleMaxLength = 150;
-            public const int ContentMaxLength = 1000000;
+            public const int ContentMaxLength = 20000;
         }
     }
 }

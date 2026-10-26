@@ -4,16 +4,19 @@ using IntelliLoop.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace IntelliLoop.Infrastructure.Data.Migrations
+namespace IntelliLoop.Infrastructure.Migrations
 {
     [DbContext(typeof(IntelliLoopDbContext))]
-    partial class IntelliLoopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261026162932_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,7 +68,7 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasMaxLength(1000000)
+                        .HasMaxLength(20000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("LectureId")
