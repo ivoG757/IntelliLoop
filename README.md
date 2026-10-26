@@ -203,7 +203,7 @@ IntelliLoop/
 - **IntelliLoop.Web** — ASP.NET Core MVC application, Razor views, authentication, configuration, and application startup.
 
 ##Current Limitations
-
+- ** Processing page isn't notified when status is updated.
 - **Generated content requires review.** Transcription errors and LLM-generated summaries may omit information, misinterpret context, or contain inaccuracies.
 - **Results depend on input quality.** Recording quality, speech clarity, transcript length, and model selection can affect processing time and output quality.
 - **Background processing is not yet fully resilient to restarts.** The current job queue uses an in-process channel, so queued or interrupted work is not guaranteed to resume automatically after an application restart.
