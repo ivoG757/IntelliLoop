@@ -248,8 +248,10 @@ IntelliLoop/
 - **Background processing is not yet fully resilient to restarts.** The current job queue uses an in-process channel, so queued or interrupted work is not guaranteed to resume automatically after an application restart.
 - **Quiz generation and grading are not yet implemented.** They belong to the broader learning workflow envisioned for IntelliLoop but are not included the current version. 
 - Local processing can be resource-intensive and times vary significantly depending on running machine and app configuration.
+- Tests are not yet implemented.
 
 
 ## Documentation
-
 - [Architecture](docs/architecture.md)
+- [Local LLM Pipeline](docs/local-llm-pipeline.md)
+- [Transcription Service](docs/transcription-service.md)
