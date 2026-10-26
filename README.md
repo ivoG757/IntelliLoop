@@ -99,25 +99,64 @@ The web project reads its configuration from `IntelliLoop.Web/appsettings.json` 
 
 For local development, use `IntelliLoop.Web/appsettings.Development.json` for machine-specific settings. The following example assumes Windows, SQL Server LocalDB, and a Whisper model configuration that supports selecting the model by name.
 
+- Sample:
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=(localdb)\\MSSQLLocalDB;Database=IntelliLoopDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
+    "DefaultConnection": "Server=.;Database=IntelliLoopDb;Trusted_Connection=True;",
+    "IntelliLoopDbContext": "Server=(localdb)\\mssqllocaldb;Database=IntelliLoopDbContext;Trusted_Connection=True;MultipleActiveResultSets=true"
   },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning",
+      "Microsoft.EntityFrameworkCore": "Information"
+    }
+  },
+
+  "Identity": {
+    "Password": {
+      "RequireNonAlphanumeric": false,
+      "RequiredUniqueChars": 1,
+      "RequireUppercase": false,
+      "RequireLowercase": false,
+      "RequireDigit": false
+    },
+    "Lockout": {
+      "MaxFailedAccessAttempts": 10,
+      "DefaultLockoutTimeSpan": "00:15:00",
+      "AllowedForNewUsers": true
+    }
+  },
+
+  "AllowedHosts": "*",
   "Ollama": {
     "BaseUrl": "http://localhost:11434",
-    "Model": "qwen3:8b"
+    "Model": "qwen3:8b",
+    "Timeout": 15
   },
   "Whisper": {
-    "Model": "Medium",
-    "ModelPath": "Models/ggml-medium.bin",
+    "ModelPath": "Models/ggml-Small.bin",
+    "Model": "Small",
     "Language": "auto"
   },
   "Prompts": {
     "Path": "Prompts"
   },
+  "LocalLlm": {
+    "Temperature": 0.2,
+    "MinimumContextTokens": 8192,
+    "MaximumContextTokens": 32768,
+    "CharactersPerTokenEstimate": 3,
+    "ExtractionOutputReserveTokens": 8192,
+    "FormattingOutputReserveTokens": 8192,
+    "ContextSafetyMarginTokens": 128,
+    "ContextRoundingMultipleTokens": 1024,
+    "EnableThinking": false,
+    "UseJsonSchemaResponseFormat": false
+  },
   "AppSettings": {
-    "basePath": "D:\\IntelliLoopData"
+    "basePath": "D:\\IntelliLoop"
   },
   "FileStorage": {
     "Path": "UserFiles"
