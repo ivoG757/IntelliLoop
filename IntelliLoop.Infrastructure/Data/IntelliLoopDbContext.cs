@@ -33,6 +33,10 @@ namespace IntelliLoop.Infrastructure.Data
                 .WithMany(u => u.ProcessingJobs)
                 .HasForeignKey(j => j.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Lecture>()
+                .Property(l => l.Concepts)
+                .HasColumnType("nvarchar(max)");
         }
     }
 }

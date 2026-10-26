@@ -103,7 +103,7 @@ namespace IntelliLoop.Web.Controllers
                 return View(BuildProcessingViewModel(response));
             }
 
-            return RedirectToAction(nameof(Index), new { id = response.LectureId });
+            return RedirectToAction(nameof(LectureController.Index), "Lecture", new { id = response.LectureId });
         }
 
         private static ProcessingJobViewModel BuildProcessingViewModel(JobResponseDto job)

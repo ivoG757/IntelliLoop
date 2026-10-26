@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace IntelliLoop.Common.ExceptionMessages
+﻿namespace IntelliLoop.Common.ExceptionMessages
 {
     public static class Configuration
     {
@@ -11,5 +7,6 @@ namespace IntelliLoop.Common.ExceptionMessages
         public const string WhisperModelPathNotConfigured = "Whisper model path not configured";
         public const string FileStoragePathNotConfigured = "File storage path not configured";
         public const string PromptsPathNotConfigured = "Prompts path not configured";
+        public const string WhisperModelNotConfigured = "Whisper model is not configured.";
     }
 }

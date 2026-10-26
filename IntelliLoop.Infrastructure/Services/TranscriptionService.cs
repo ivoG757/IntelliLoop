@@ -12,11 +12,12 @@ namespace IntelliLoop.Infrastructure.Services
     {
 
         private readonly WhisperFactory _whisperFactory;
-
+        private readonly IFileStorage _storage;
         private readonly WhisperProcessor _processor;
 
-        public TranscriptionService(IConfiguration configuration)
+        public TranscriptionService(IConfiguration configuration, IFileStorage storage)
         {
+            _storage = storage;
 
             var modelPath = configuration["Whisper:ModelPath"] 
                 ?? throw new InvalidOperationException(WhisperModelPathNotConfigured);
@@ -37,7 +38,7 @@ namespace IntelliLoop.Infrastructure.Services
 
         public async Task<string> TranscribeAudioAsync(string audioFilePath, CancellationToken token)
         {
-            if (!File.Exists(audioFilePath))
+            if (!_storage.Exists(audioFilePath))
             {
                 throw new FileNotFoundException($"Audio file not found: {audioFilePath}");
             }
@@ -55,7 +56,7 @@ namespace IntelliLoop.Infrastructure.Services
                     .ForceFormat(WavExtension)
                     ).ProcessAsynchronously();
 
-                await using var fileStream = File.OpenRead(convertedFilePath);
+                await using var fileStream = _storage.GetStream(convertedFilePath);
 
                 var transcript = new StringBuilder();
 
@@ -71,9 +72,9 @@ namespace IntelliLoop.Infrastructure.Services
 
             finally
             {
-                if (File.Exists(convertedFilePath))
+                if (_storage.Exists(convertedFilePath))
                 {
-                    File.Delete(convertedFilePath);
+                    _storage.Delete(convertedFilePath);
                 }
             }
         }

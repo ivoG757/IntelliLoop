@@ -18,7 +18,6 @@ namespace IntelliLoop.Core.Entities.Models
         [MaxLength(SummaryMaxLength)]
         public string Summary { get; set; } = null!;
 
-        [MaxLength(ConceptMaxLength)]
         public ICollection<string> Concepts { get; set; } = new List<string>();
         public ICollection<NoteSection> Notes { get; set; } = new List<NoteSection>();
         public ProcessingJob ProcessingJob { get; set; } = null!;

@@ -70,7 +70,7 @@ namespace IntelliLoop.Core.Services
             }
             catch (Exception ex)
             {
-                await _fileStorage.Delete(filePath);
+                _fileStorage.Delete(filePath);
 
                 _logger.LogError(ex, "Failed to add the processing job for user {UserId}.", userId);
                 throw;
@@ -185,7 +185,7 @@ namespace IntelliLoop.Core.Services
 
             try
             {
-                await _fileStorage.Delete(audioFilePath);
+                _fileStorage.Delete(audioFilePath);
             }
             catch (Exception ex)
             {

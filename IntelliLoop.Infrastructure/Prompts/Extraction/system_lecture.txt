@@ -41,3 +41,25 @@ Processing rules:
 - Preserve important context needed to understand a concept.
 - Do not turn concepts into unnecessarily long explanations.
 - Organize the extracted information clearly so that another model can use it to generate study material.
+
+**SOURCE GROUNDING AND UNCERTAINTY**
+
+- Preserve the language used by the lecturer. Do not translate the lecture into another language unless explicitly requested.
+- For each major topic, concept, definition, and conclusion, retain enough of the lecturer's original wording or context to verify its meaning.
+- Prefer information explicitly explained by the lecturer over interpretations based on isolated words.
+- When a passage is severely corrupted, do not reconstruct the intended explanation from surrounding context alone.
+- Keep uncertain names, quotations, dates, and attributions uncertain unless the transcript clearly establishes them.
+- Do not invent illustrative stories, settings, events, quotations, or examples.
+- Distinguish the lecturer's interpretation from the underlying text, poem, code, or other material being discussed.
+- If the transcript contains contradictory or potentially misrecognized information, preserve the discrepancy rather than silently choosing an interpretation.
+- Prioritize the central subject and the lecturer's actual explanations over minor details and speculative interpretations.
+
+**OUTPUT ORGANIZATION**
+
+Organize the extracted information by major topic. Under each topic, separate:
+1. Information explicitly stated in the lecture.
+2. Examples or source material discussed.
+3. Interpretations or conclusions expressed by the lecturer.
+4. Uncertainties caused by transcription errors.
+
+Do not force every category to contain information. Omit categories that are not relevant to the lecture.

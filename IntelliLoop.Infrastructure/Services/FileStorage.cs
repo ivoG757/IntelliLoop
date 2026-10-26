@@ -1,6 +1,6 @@
 ﻿using IntelliLoop.Core.Contracts.Services;
 using Microsoft.Extensions.Configuration;
-using IntelliLoop.Common.ExceptionMessages;
+using static IntelliLoop.Common.ExceptionMessages.Configuration;
 
 namespace IntelliLoop.Infrastructure.Services
 {
@@ -10,14 +10,14 @@ namespace IntelliLoop.Infrastructure.Services
 
         public FileStorage(IConfiguration configuration)
         {
-            var basePath = configuration["AppSettings:basePath"] ?? throw new InvalidOperationException(Configuration.BasePathNotConfigured);
-            var fileStoragePath = configuration["FileStorage:Path"] ?? throw new InvalidOperationException(Configuration.FileStoragePathNotConfigured);
+            var basePath = configuration["AppSettings:basePath"] ?? throw new InvalidOperationException(BasePathNotConfigured);
+            var fileStoragePath = configuration["FileStorage:Path"] ?? throw new InvalidOperationException(FileStoragePathNotConfigured);
             _path = Path.Combine(basePath, fileStoragePath);
         }
 
-        public async Task Delete(string path)
+        public void Delete(string path)
         {
-            await Task.Run(() => File.Delete(path));
+            File.Delete(path);
         }
 
         public bool Exists(string path)

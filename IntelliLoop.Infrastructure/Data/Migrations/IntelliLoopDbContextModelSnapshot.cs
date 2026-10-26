@@ -30,12 +30,11 @@ namespace IntelliLoop.Infrastructure.Data.Migrations
 
                     b.PrimitiveCollection<string>("Concepts")
                         .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Summary")
                         .IsRequired()
-                        .HasMaxLength(100000)
+                        .HasMaxLength(10000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")

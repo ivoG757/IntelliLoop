@@ -1,7 +1,7 @@
 ﻿using IntelliLoop.Core.Contracts.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using IntelliLoop.Common.ExceptionMessages;
+using static IntelliLoop.Common.ExceptionMessages.Configuration;
 
 namespace IntelliLoop.Infrastructure.Services
 {
@@ -14,7 +14,7 @@ namespace IntelliLoop.Infrastructure.Services
         {
             _logger = logger;
 
-            var promptPath = configuration["Prompts:Path"] ?? throw new InvalidOperationException(Configuration.PromptsPathNotConfigured);
+            var promptPath = configuration["Prompts:Path"] ?? throw new InvalidOperationException(PromptsPathNotConfigured);
 
             var assemblyDirectory = Path.GetDirectoryName(
                 typeof(PromptService).Assembly.Location) 
