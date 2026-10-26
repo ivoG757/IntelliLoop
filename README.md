@@ -103,8 +103,7 @@ For local development, use `IntelliLoop.Web/appsettings.Development.json` for ma
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=.;Database=IntelliLoopDb;Trusted_Connection=True;",
-    "IntelliLoopDbContext": "Server=(localdb)\\mssqllocaldb;Database=IntelliLoopDbContext;Trusted_Connection=True;MultipleActiveResultSets=true"
+    "DefaultConnection": "Server=.;Database=IntelliLoopDb;Trusted_Connection=True;"
   },
   "Logging": {
     "LogLevel": {
