@@ -14,7 +14,7 @@ namespace IntelliLoop.Web.Models.Lecture
         [StringLength(SummaryMaxLength)]
         public string Summary { get; set; } = null!;
 
-        [StringLength(ConceptMaxLength)]
+        [MaxLength(ConceptMaxLength)]
         public List<string> KeyConcepts { get; set; } = new List<string>();
         public List<EditNoteViewModel> Notes { get; set; } = new List<EditNoteViewModel>();
     }
