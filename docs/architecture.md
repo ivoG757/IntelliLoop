@@ -9,7 +9,7 @@ The application uses a background processing architecture so that audio transcri
 The main components are:
 
 - **File storage:** Stores the uploaded audio and provides access to the files.
-- **Database:** Stores processing jobs and, after successful processing, the generated lecture and its content.
+- **Repository** Stores processing jobs through the database and, after successful processing, the generated lecture and its content.
 - **Channel:** Acts as a queue for job IDs waiting to be processed.
 - **LectureWorker:** Reads job IDs from the Channel and starts the processing workflow.
 - **LectureProcessingService:** Coordinates transcription, AI analysis, and saving the results.
