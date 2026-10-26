@@ -21,19 +21,6 @@ The project aims to support a broader learning loop, from lecture processing and
 
 IntelliLoop separates lecture submission from the processing workflow so that transcription and AI analysis can run in the background.
 
-```mermaid
-flowchart TD
-    A["Upload lecture audio"] --> B["Create processing job"]
-    B --> C["Queue job for background processing"]
-    C --> D["Prepare audio with FFmpeg"]
-    D --> E["Transcribe speech with Whisper"]
-    E --> F["Extract information with the LLM"]
-    F --> G["Format structured study materials"]
-    G --> H["Save generated lecture"]
-    H --> I["View, edit, or delete lecture"]
-    C --> J["Track processing failures"]
-```
-
 ### Processing Pipeline
 
 1. **Submission:** The uploaded recording is saved, and a processing job is created in the database.
