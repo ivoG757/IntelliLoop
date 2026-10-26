@@ -284,5 +284,28 @@ namespace IntelliLoop.Core.Services
             Title = job.Lecture?.Title ?? string.Empty,
             Status = job.Status
         };
+
+        public async Task<LectureOperationResult> DeleteProcessAsync(JobRequestDto request)
+        {
+            ProcessingJob? job = await _lectureProcessingRepository.GetJobForDeletionByIdAsync(request.JobId, request.UserId);
+
+            if(job is null)
+            {
+                return LectureOperationResult.NotFound;
+            }
+
+            _lectureProcessingRepository.Delete(job);
+
+            try
+            {
+                await _uof.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return LectureOperationResult.Failed;
+            }
+            return LectureOperationResult.Success;
+        }
     }
 }

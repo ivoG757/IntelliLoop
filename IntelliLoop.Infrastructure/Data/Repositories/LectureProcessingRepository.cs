@@ -16,6 +16,11 @@ namespace IntelliLoop.Infrastructure.Data.Repositories
             await _context.ProcessingJobs.AddAsync(job);
         }
 
+        public void Delete(ProcessingJob job)
+        {
+            _context.ProcessingJobs.Remove(job);
+        }
+
         public async Task<ProcessingJob?> GetJobByIdAsync(Guid jobId, Guid userId)
         {
             var userIdString = userId.ToString();
@@ -24,6 +29,7 @@ namespace IntelliLoop.Infrastructure.Data.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(j => j.Id == jobId && j.UserId == userIdString);
         }
+
 
         public async Task<ProcessingJob?> GetJobByIdAsync(Guid jobId)
         {
@@ -35,6 +41,14 @@ namespace IntelliLoop.Infrastructure.Data.Repositories
         {
             var userIdString = userId.ToString();
             return await _context.ProcessingJobs.FirstOrDefaultAsync(j => j.LectureId == lectureId && j.UserId == userIdString);
+        }
+
+        public async Task<ProcessingJob?> GetJobForDeletionByIdAsync(Guid jobId, Guid userId)
+        {
+            var userIdString = userId.ToString();
+
+            return await _context.ProcessingJobs
+                .FirstOrDefaultAsync(j => j.Id == jobId && j.UserId == userIdString);
         }
 
         public async Task<IEnumerable<ProcessingJob>> GetJobsByUserIdAsync(Guid userId, int skip, int take)

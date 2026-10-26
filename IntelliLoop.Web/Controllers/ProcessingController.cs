@@ -1,5 +1,6 @@
 ﻿using IntelliLoop.Common.Constants;
 using IntelliLoop.Core.Contracts.Services;
+using IntelliLoop.Core.DTOs;
 using IntelliLoop.Core.DTOs.Request;
 using IntelliLoop.Core.DTOs.Response;
 using IntelliLoop.Core.Entities.Enums;
@@ -11,7 +12,7 @@ namespace IntelliLoop.Web.Controllers
 {
     public class ProcessingController : BaseController
     {
-        private ILectureService _lectureService { get; set; }
+        private readonly ILectureService _lectureService;
         public ProcessingController(ILectureService service)
         {
             _lectureService = service;
@@ -72,18 +73,42 @@ namespace IntelliLoop.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ProcessingFailed([FromRoute] Guid id)
+        public async Task<IActionResult> Failed([FromRoute] Guid id)
         {
-            return View(); //TODO: ADD AN ACTUAL FUNCTIONALITY!
+            return View(id);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
+        {
+            var request = new JobRequestDto
+            {
+                JobId = id,
+                UserId = GetUserId()
+            };
+
+            var result = await _lectureService.DeleteProcessAsync(request);
+
+            if (result == LectureOperationResult.Failed)
+            {
+                return StatusCode(500);
+            }
+            if (result == LectureOperationResult.NotFound)
+            {
+                return NotFound();
+            }
+
+            return RedirectToAction(nameof(ProcessingController.Upload), "Processing");
+        }
+
+
         [HttpGet]
-        public async Task<IActionResult> Index([FromRoute] Guid id)
+        public async Task<IActionResult> Index([FromRoute] Guid Id)
         {
             var jobRequest = new JobRequestDto
             {
                 UserId = GetUserId(),
-                JobId = id
+                JobId = Id
             };
 
             JobResponseDto? response = await _lectureService.GetJobAsync(jobRequest);
@@ -95,7 +120,7 @@ namespace IntelliLoop.Web.Controllers
 
             if (response.Status == LectureGenerationStatus.Failed)
             {
-                return RedirectToAction(nameof(ProcessingFailed), new { id = response.LectureId });
+                return RedirectToAction(nameof(Failed), new { id = response.LectureId });
             }
 
             if (response.Status != LectureGenerationStatus.Completed)

@@ -42,8 +42,7 @@ namespace IntelliLoop.Core.Contracts.Services
         /// </summary>
         /// <param name="request">The user and the lecture to delete.</param>
         /// <returns>
-        /// true if the lecture was deleted; false if it doesn't exist,
-        /// belongs to another user.
+        /// LectureOperationResult
         /// </returns>
         Task<LectureOperationResult> DeleteAsync(LectureRequestDto request);
 
@@ -52,9 +51,17 @@ namespace IntelliLoop.Core.Contracts.Services
         /// </summary>
         /// <param name="request"></param>
         /// <returns>
-        /// true if the lecture was updated; false if it doesn't exist,
-        /// belongs to another user.
+        /// LectureOperationResult
         /// </returns>
         Task<LectureOperationResult> UpdateAsync(UpdateLectureRequestDto request);
+
+        /// <summary>
+        /// Deletes a processing job that belongs to the user in the request.
+        /// </summary>
+        /// <param name="request">The userId and the jobId to delete.</param>
+        /// <returns>
+        /// LectureOperationResult
+        /// </returns>
+        Task<LectureOperationResult> DeleteProcessAsync(JobRequestDto request);
     }
 }

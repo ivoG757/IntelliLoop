@@ -7,7 +7,9 @@ namespace IntelliLoop.Core.Contracts.Repositories
         public Task<ProcessingJob?> GetJobByLectureIdAsync(Guid lectureId, Guid userId);
         public Task<ProcessingJob?> GetJobByIdAsync(Guid jobId, Guid userId);
         public Task<ProcessingJob?> GetJobByIdAsync(Guid jobId);
+        public Task<ProcessingJob?> GetJobForDeletionByIdAsync(Guid jobId, Guid userId);
         public Task AddJobAsync(ProcessingJob job);
         public Task<IEnumerable<ProcessingJob>> GetJobsByUserIdAsync(Guid userId, int skip, int take);
+        public void Delete(ProcessingJob job);
     }
 }

@@ -1,0 +1,29 @@
+﻿@model Guid
+
+@{
+    ViewData["Title"] = "Processing Failed";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/delete.css" asp-append-version="true" /> @*TODO: make a custom style for this page*@
+}
+
+<section class="empty-state">
+    <div class="empty-symbol">
+        <i class="bi bi-exclamation-triangle"></i>
+    </div>
+
+    <h1>Processing failed</h1>
+
+    <p>
+        We couldn't process this lecture. You can delete the failed job and try again.
+    </p>
+
+    <form asp-controller="Processing" asp-action="Delete" asp-route-id="@Model" method="post">
+        <button type="submit" class="primary-btn danger">
+            <i class="bi bi-trash"></i>
+            Delete failed lecture
+        </button>
+    </form>
+</section>
