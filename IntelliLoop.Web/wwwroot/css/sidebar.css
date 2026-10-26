@@ -1,4 +1,44 @@
-﻿.sidebar {
+﻿.sidebar-user-email {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sidebar-logout-form {
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.sidebar-logout {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+    font-size: 1.05rem;
+    cursor: pointer;
+    transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+    .sidebar-logout:hover {
+        background: #e9f2fb;
+        border-color: #d7e6f5;
+        color: #345b80;
+    }
+
+    .sidebar-logout:focus-visible {
+        outline: 2px solid #8ab4df;
+        outline-offset: 2px;
+    }
+
+.sidebar {
     width: 252px;
     flex: 0 0 252px;
     height: 100vh;

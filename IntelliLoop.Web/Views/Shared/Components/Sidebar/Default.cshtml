@@ -3,9 +3,22 @@
 
 <aside class="sidebar" aria-label="Workspace navigation">
     <div class="sidebar-footer">
-        <span class="avatar">@Model.UserEmail[0]</span>
-        <span>@Model.UserEmail</span>
-    </div>
+    <span class="avatar">@Model.UserEmail[0]</span>
+    <span class="sidebar-user-email" title="@Model.UserEmail">@Model.UserEmail</span>
+
+    <form asp-area="Identity"
+          asp-page="/Account/Logout"
+          asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })"
+          method="post"
+          class="sidebar-logout-form">
+        <button type="submit"
+                class="sidebar-logout"
+                title="Log out"
+                aria-label="Log out">
+            <i class="bi bi-box-arrow-right"></i>
+        </button>
+    </form>
+</div>
 
     <h2 class="sidebar-heading">My Lectures</h2>
 

@@ -1,8 +1,28 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
+    Layout = "_Layout";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="home-page">
+    <h1>Turn lecture recordings into study materials.</h1>
+
+    <p class="home-description">
+        Upload a lecture's audio. IntelliLoop transcribes it and creates
+        summaries, key concepts and study notes for you.
+    </p>
+
+    <ol class="home-steps">
+        <li>
+            <span class="step-number">01</span>
+            <span>Upload a lecture</span>
+        </li>
+        <li>
+            <span class="step-number">02</span>
+            <span>Transcribe with Whisper</span>
+        </li>
+        <li>
+            <span class="step-number">03</span>
+            <span>Generate study notes</span>
+        </li>
+    </ol>
+</section>

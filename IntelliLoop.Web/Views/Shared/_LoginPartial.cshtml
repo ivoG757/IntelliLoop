@@ -2,22 +2,32 @@
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<User> SignInManager
 
-<ul class="navbar-nav ms-auto">
+<ul class="navbar-nav ms-auto align-items-sm-center">
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="nav-item">
-            <form asp-area="Identity" asp-page="/Account/Logout" method="post" class="d-inline">
-                <button type="submit" class="nav-link text-dark border-0 bg-transparent">Logout</button>
+            <form asp-area="Identity"
+                  asp-page="/Account/Logout"
+                  method="post"
+                  class="d-inline">
+                <button type="submit"
+                        class="nav-link theme-nav-link border-0 bg-transparent">
+                    Logout
+                </button>
             </form>
         </li>
     }
     else
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+            <a class="nav-link theme-nav-link"
+               asp-area="Identity"
+               asp-page="/Account/Login">Login</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
+            <a class="nav-link theme-nav-link"
+               asp-area="Identity"
+               asp-page="/Account/Register">Register</a>
         </li>
     }
 </ul>
